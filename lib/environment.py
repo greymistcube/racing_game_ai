@@ -11,7 +11,6 @@ class Environment:
         self.track = Track()
         self.start_grid = self.track.get_start_grid()
         self.car = Car(self.start_grid)
-#        self.start_pos = self.track.get_start_pos()
     
     def get_surface(self):
         surface = pygame.Surface(RESOLUTION, pygame.SRCALPHA)

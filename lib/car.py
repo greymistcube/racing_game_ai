@@ -1,5 +1,5 @@
 import pygame
-
+import numpy as np
 import lib
 from lib.constants import TILE_WIDTH, TILE_HEIGHT
 
