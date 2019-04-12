@@ -1,1 +1,1 @@
-from lib.environment import Environment
+from lib.core import Core
