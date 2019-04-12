@@ -35,10 +35,10 @@ def get_track_pos_list(arr):
                 break
         if result:
             break
-    
-    while(True):
+
+    while True:
         current = result[-1]
-        
+
         # four adjacent coordinates to check
         adjacents = (
             (current[0] - 1, current[1]),
@@ -51,7 +51,7 @@ def get_track_pos_list(arr):
         # and the length of the result is sufficient, we've completed the loop
         if any([pos == result[0] for pos in adjacents]) and len(result) > 2:
             break
-        
+
         for pos in adjacents:
             if arr[pos[1]][pos[0]] and pos not in result:
                 result.append(pos)
@@ -73,7 +73,7 @@ def get_track_tile_list(track_pos_list):
             result.append(current_tile)
         else:
             result.append(TrackTile(pos[0], pos[1]))
-    
+
     # connect the end points to complete the loop
     result[-1].next = result[0]
     result[0].prev = result[-1]
@@ -97,7 +97,7 @@ class Track():
         # set starting tile. this should be randomized at some point
         self.start_tile = self.track_tiles[0]
         self.surface = self.create_surface()
-    
+
     def create_surface(self):
         surface = pygame.Surface(RESOLUTION, pygame.SRCALPHA)
         for track_tile in self.track_tiles:
@@ -122,6 +122,6 @@ class TrackTile():
         self.rect.center = (self.x, self.y)
         self.prev = None
         self.next = None
-    
+
     def get_surface(self):
         return self.__image

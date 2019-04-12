@@ -13,12 +13,12 @@ class Environment:
         self.start_grid = self.track.get_start_grid()
         self.cars = [Car(self.start_grid)]
         self.events = Events()
-    
+
     def update(self):
         self.events.update()
         for car in self.cars:
             car.update(self.events)
-    
+
     def get_surface(self):
         surface = pygame.Surface(RESOLUTION, pygame.SRCALPHA)
         surface.fill(GREEN)
