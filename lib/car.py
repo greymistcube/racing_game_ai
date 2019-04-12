@@ -19,7 +19,16 @@ class Car():
         self.x = (self.grid_x * TILE_WIDTH) + (TILE_WIDTH // 2)
         self.y = (self.grid_y * TILE_HEIGHT) + (TILE_HEIGHT // 2)
         self.rect.center = (self.x, self.y)
+        self.speed = 0
         return
     
+    def update(self, events):
+        if events.acc:
+            self.speed += 0.2
+        if events.dec:
+            self.speed -= 0.2
+        self.x += self.speed
+        self.rect.center = (self.x, self.y)
+
     def get_surface(self):
         return self.__image

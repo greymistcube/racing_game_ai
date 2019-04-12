@@ -20,6 +20,8 @@ if __name__ == "__main__":
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+        
+        env.update()
 
         surface = env.get_surface()
         surface = pygame.transform.scale(surface, screen.get_size())
