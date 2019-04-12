@@ -33,7 +33,12 @@ class Car():
         self.degree = 0
         return
 
-    def update(self, events):
+    def update(self):
+        self.x += self.velocity[1]
+        self.y += self.velocity[0]
+        self.rect.center = (self.x, self.y)
+
+    def handle_events(self, events):
         if events.acc and self.speed < SPD_LIMIT:
             self.speed += ACC_RATE
         if events.dec and self.speed > -SPD_LIMIT:
@@ -44,10 +49,6 @@ class Car():
             self.degree -= TURN_SPD
         self.degree = self.degree % 360
         self.velocity = self.get_velocity()
-
-        self.x += self.velocity[1]
-        self.y += self.velocity[0]
-        self.rect.center = (self.x, self.y)
 
     def get_velocity(self):
         return np.matmul(_R(np.radians(self.degree)), (0, 1)) * self.speed

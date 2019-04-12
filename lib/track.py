@@ -7,7 +7,6 @@ from lib.constants import RESOLUTION, WIDTH, HEIGHT, GREEN, TILE_SIZE
 
 pygame.init()
 
-
 def load_image(file):
     image = pygame.image.load(file)
     return image

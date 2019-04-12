@@ -1,4 +1,3 @@
-import sys
 import pygame
 
 import lib
@@ -20,7 +19,7 @@ if __name__ == "__main__":
         clock.tick(60)
 
         core.update()
-        
+
         if core.game_over():
             core.new_game()
             continue
