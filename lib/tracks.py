@@ -3,7 +3,7 @@ import numpy as np
 import pygame
 
 import lib
-from lib.constants import RESOLUTION, WIDTH, HEIGHT, GREEN, TILE_WIDTH, TILE_HEIGHT
+from lib.constants import RESOLUTION, WIDTH, HEIGHT, GREEN, TILE_SIZE
 
 pygame.init()
 
@@ -14,14 +14,14 @@ def load_image(file):
 
 # temporary method for creating an array representation of a track
 def get_track_arr():
-    temp = np.zeros((12, 18), dtype='int')
+    temp = np.zeros((10, 14), dtype='int')
     temp[:, 0] = 1
     temp[:, -1] = 1
     temp[0, :] = 1
     temp[-1, :] = 1
     temp[0, 0] = 2
-    result = np.zeros((15, 20), dtype='int')
-    result[1:-2, 1:-1] += temp
+    result = np.zeros((12, 16), dtype='int')
+    result[1:-1, 1:-1] += temp
     return result
 
 def get_track_pos_list(arr):
@@ -117,8 +117,8 @@ class TrackTile():
         self.rect = self.__image.get_rect()
         self.grid_x = grid_x
         self.grid_y = grid_y
-        self.x = (self.grid_x * TILE_WIDTH) + (TILE_WIDTH // 2)
-        self.y = (self.grid_y * TILE_HEIGHT) + (TILE_HEIGHT // 2)
+        self.x = (self.grid_x * TILE_SIZE) + (TILE_SIZE // 2)
+        self.y = (self.grid_y * TILE_SIZE) + (TILE_SIZE // 2)
         self.rect.center = (self.x, self.y)
         self.prev = None
         self.next = None
