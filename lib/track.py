@@ -3,10 +3,9 @@ import numpy as np
 import pygame
 
 import lib
-from lib.constants import RESOLUTION, WIDTH, HEIGHT, GREEN, TILE_WIDTH, TILE_HEIGHT
+from lib.constants import RESOLUTION, WIDTH, HEIGHT, GREEN, TILE_SIZE
 
 pygame.init()
-
 
 def load_image(file):
     image = pygame.image.load(file)
@@ -14,14 +13,14 @@ def load_image(file):
 
 # temporary method for creating an array representation of a track
 def get_track_arr():
-    temp = np.zeros((12, 18), dtype='int')
+    temp = np.zeros((10, 14), dtype='int')
     temp[:, 0] = 1
     temp[:, -1] = 1
     temp[0, :] = 1
     temp[-1, :] = 1
     temp[0, 0] = 2
-    result = np.zeros((15, 20), dtype='int')
-    result[1:-2, 1:-1] += temp
+    result = np.zeros((12, 16), dtype='int')
+    result[1:-1, 1:-1] += temp
     return result
 
 def get_track_pos_list(arr):
@@ -35,10 +34,10 @@ def get_track_pos_list(arr):
                 break
         if result:
             break
-    
-    while(True):
+
+    while True:
         current = result[-1]
-        
+
         # four adjacent coordinates to check
         adjacents = (
             (current[0] - 1, current[1]),
@@ -51,7 +50,7 @@ def get_track_pos_list(arr):
         # and the length of the result is sufficient, we've completed the loop
         if any([pos == result[0] for pos in adjacents]) and len(result) > 2:
             break
-        
+
         for pos in adjacents:
             if arr[pos[1]][pos[0]] and pos not in result:
                 result.append(pos)
@@ -73,7 +72,7 @@ def get_track_tile_list(track_pos_list):
             result.append(current_tile)
         else:
             result.append(TrackTile(pos[0], pos[1]))
-    
+
     # connect the end points to complete the loop
     result[-1].next = result[0]
     result[0].prev = result[-1]
@@ -97,7 +96,7 @@ class Track():
         # set starting tile. this should be randomized at some point
         self.start_tile = self.track_tiles[0]
         self.surface = self.create_surface()
-    
+
     def create_surface(self):
         surface = pygame.Surface(RESOLUTION, pygame.SRCALPHA)
         for track_tile in self.track_tiles:
@@ -117,11 +116,11 @@ class TrackTile():
         self.rect = self.__image.get_rect()
         self.grid_x = grid_x
         self.grid_y = grid_y
-        self.x = (self.grid_x * TILE_WIDTH) + (TILE_WIDTH // 2)
-        self.y = (self.grid_y * TILE_HEIGHT) + (TILE_HEIGHT // 2)
+        self.x = (self.grid_x * TILE_SIZE) + (TILE_SIZE // 2)
+        self.y = (self.grid_y * TILE_SIZE) + (TILE_SIZE // 2)
         self.rect.center = (self.x, self.y)
         self.prev = None
         self.next = None
-    
+
     def get_surface(self):
         return self.__image
