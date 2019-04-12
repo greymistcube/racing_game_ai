@@ -1,6 +1,7 @@
 import pygame
 
 import lib
+from lib.constants import TILE_WIDTH, TILE_HEIGHT
 
 pygame.init()
 
@@ -11,5 +12,14 @@ def load_image(file):
 class Car():
     __image = load_image("./rsc/img/tiny_car.png")
 
-    def __init__(self):
+    def __init__(self, grid):
+        self.rect = self.__image.get_rect()
+        self.grid_x = grid[0]
+        self.grid_y = grid[1]
+        self.x = (self.grid_x * TILE_WIDTH) + (TILE_WIDTH // 2)
+        self.y = (self.grid_y * TILE_HEIGHT) + (TILE_HEIGHT // 2)
+        self.rect.center = (self.x, self.y)
         return
+    
+    def get_surface(self):
+        return self.__image

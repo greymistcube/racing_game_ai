@@ -11,7 +11,7 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode((320 * 3, 240 * 3))
     clock = pygame.time.Clock()
     env = lib.Environment()
-    print(env.track.track)
+
     # main loop
     while True:
         # set tick rate to 60 per second
