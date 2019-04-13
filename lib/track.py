@@ -74,27 +74,7 @@ def grids_to_tiles(grids):
     # connect the end points to complete the loop
     result[-1].next = result[0]
     result[0].prev = result[-1]
-    """
-    for track_tile in result:
-        prev_tile = track_tile.prev
-        next_tile = track_tile.next
-        if track_tile.grid_x < next_tile.grid_x:
-            track_tile.walls['r'] = False
-        if track_tile.grid_x > next_tile.grid_x:
-            track_tile.walls['l'] = False
-        if track_tile.grid_y < next_tile.grid_y:
-            track_tile.walls['b'] = False
-        if track_tile.grid_y > next_tile.grid_y:
-            track_tile.walls['t'] = False
-        if track_tile.grid_x < prev_tile.grid_x:
-            track_tile.walls['r'] = False
-        if track_tile.grid_x > prev_tile.grid_x:
-            track_tile.walls['l'] = False
-        if track_tile.grid_y < prev_tile.grid_y:
-            track_tile.walls['b'] = False
-        if track_tile.grid_y > prev_tile.grid_y:
-            track_tile.walls['t'] = False
-    """
+
     return result
 
 # this process is pretty mess at the moment
@@ -103,6 +83,8 @@ def create_track():
     arr = create_track_arr()
     grids = arr_to_grids(arr)
     tiles = grids_to_tiles(grids)
+    for tile in tiles:
+        tile.set_surface()
     return tiles
 
 # track object is basically a wrapper for a doubly linked list
@@ -131,12 +113,12 @@ class Track():
 class TrackTile():
     __image = load_image("./rsc/img/track_tile.png")
     __images = {
-        "tb": load_image("./rsc/img/track_tile_tb.png"),
-        "tl": load_image("./rsc/img/track_tile_tl.png"),
-        "tr": load_image("./rsc/img/track_tile_tr.png"),
-        "bl": load_image("./rsc/img/track_tile_bl.png"),
-        "br": load_image("./rsc/img/track_tile_br.png"),
-        "lr": load_image("./rsc/img/track_tile_lr.png"),
+        "ne": load_image("./rsc/img/track_tile_ne.png"),
+        "nw": load_image("./rsc/img/track_tile_nw.png"),
+        "se": load_image("./rsc/img/track_tile_se.png"),
+        "sw": load_image("./rsc/img/track_tile_sw.png"),
+        "ns": load_image("./rsc/img/track_tile_ns.png"),
+        "ew": load_image("./rsc/img/track_tile_ew.png"),
     }
 
     def __init__(self, grid):
@@ -147,6 +129,21 @@ class TrackTile():
         self.rect.center = (self.x, self.y)
         self.prev = None
         self.next = None
+        self.surface = self.__image
+        return
+
+    def set_surface(self):
+        # cardinal direction naming order: n, s, e, w
+        key = ""
+        if self.grid.N == self.prev.grid or self.grid.N == self.next.grid:
+            key += "n"
+        if self.grid.S == self.prev.grid or self.grid.S == self.next.grid:
+            key += "s"
+        if self.grid.E == self.prev.grid or self.grid.E == self.next.grid:
+            key += "e"
+        if self.grid.W == self.prev.grid or self.grid.W == self.next.grid:
+            key += "w"
+        self.surface = self.__images[key]
 
     def get_surface(self):
-        return self.__image
+        return self.surface

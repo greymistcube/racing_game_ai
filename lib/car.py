@@ -38,17 +38,18 @@ class Car():
 
     def update_grid(self):
         if self.rel_x > TILE_SIZE:
-            self.grid.x += 1
+            self.grid = self.grid.E
             self.rel_x -= TILE_SIZE
-        if self.rel_x < 0:
-            self.grid.x -= 1
+        elif self.rel_x < 0:
+            self.grid = self.grid.W
             self.rel_x += TILE_SIZE
-        if self.rel_y > TILE_SIZE:
-            self.grid.y += 1
+        elif self.rel_y > TILE_SIZE:
+            self.grid = self.grid.S
             self.rel_y -= TILE_SIZE
-        if self.rel_y < 0:
-            self.grid.y -= 1
+        elif self.rel_y < 0:
+            self.grid = self.grid.N
             self.rel_y += TILE_SIZE
+        return
 
     def handle_events(self, events):
         if events.acc and self.speed < SPD_LIMIT:
