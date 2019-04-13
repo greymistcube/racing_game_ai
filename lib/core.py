@@ -1,11 +1,39 @@
 import numpy as np
+import pygame
 
+import lib.constants as const
 from lib.events import Events
 from lib.environment import Environment
 from lib.car import Car
 
+pygame.init()
+
+class TextRenderer:
+    __font = pygame.font.Font("./rsc/font/munro.ttf", 10)
+    __line_height = __font.get_linesize()
+
+    # render a single line of text
+    def text_to_surface(self, text):
+        return self.__font.render(text, False, const.BLACK)
+
+    # render multiple lines of texts
+    def texts_to_surface(self, texts):
+        text_surfaces = [self.text_to_surface(text) for text in texts]
+        surface = pygame.Surface(
+            (
+                max(text_surface.get_width() for text_surface in text_surfaces),
+                len(text_surfaces) * self.__line_height
+            ),
+            pygame.SRCALPHA
+        )
+        for i, text_surface in enumerate(text_surfaces):
+            surface.blit(text_surface, (0, self.__line_height * i))
+        return surface
+
 class Core:
+
     def __init__(self):
+        self.text_renderer = TextRenderer()
         self.game_count = 0
         self.events = Events()
         self.cars = None
@@ -16,7 +44,7 @@ class Core:
         self.game_count += 1
         self.env = Environment()
         start_grid = self.env.track.get_start_grid()
-        self.cars = [Car(start_grid)]
+        self.cars = [Car(self.env.track.start_tile)]
         self.env.add_cars(self.cars)
         return
 
@@ -27,7 +55,18 @@ class Core:
         self.env.update(self.events)
 
     def game_over(self):
-        return False
+        return self.env.num_alive == 0
 
     def get_surface(self):
-        return self.env.get_surface()
+        surface = self.env.get_surface()
+        surface.blit(self.get_info_surface(), (0, 0))
+        return surface
+    
+    def get_info_surface(self):
+        texts = [
+            " Game: {}".format(self.game_count),
+            " Score: {}".format(self.env.score),
+            " Alive: {}".format(self.env.num_alive)
+        ]
+
+        return self.text_renderer.texts_to_surface(texts)
