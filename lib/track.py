@@ -1,5 +1,6 @@
-import numpy as np
+import random
 
+import numpy as np
 import pygame
 
 import lib
@@ -84,7 +85,7 @@ def create_track():
     grids = arr_to_grids(arr)
     tiles = grids_to_tiles(grids)
     for tile in tiles:
-        tile.set_surface()
+        tile.set_track_properties()
     return tiles
 
 # track object is basically a wrapper for a doubly linked list
@@ -96,6 +97,8 @@ class Track():
         self.track_tiles = create_track()
         # set starting tile. this should be randomized at some point
         self.start_tile = self.track_tiles[0]
+        for _ in range(random.randrange(len(self.track_tiles))):
+            self.start_tile = self.start_tile.next
         self.surface = self.create_surface()
 
     def create_surface(self):
@@ -129,21 +132,34 @@ class TrackTile():
         self.rect.center = (self.x, self.y)
         self.prev = None
         self.next = None
+        self.walls = Walls()
         self.surface = self.__image
         return
 
-    def set_surface(self):
+    def set_track_properties(self):
         # cardinal direction naming order: n, s, e, w
         key = ""
         if self.grid.N == self.prev.grid or self.grid.N == self.next.grid:
+            self.walls.N = False
             key += "n"
         if self.grid.S == self.prev.grid or self.grid.S == self.next.grid:
+            self.walls.S = False
             key += "s"
         if self.grid.E == self.prev.grid or self.grid.E == self.next.grid:
+            self.walls.E = False
             key += "e"
         if self.grid.W == self.prev.grid or self.grid.W == self.next.grid:
+            self.walls.W = False
             key += "w"
         self.surface = self.__images[key]
+        return
 
     def get_surface(self):
         return self.surface
+
+class Walls:
+    def __init__(self):
+        self.N = True
+        self.S = True
+        self.E = True
+        self.W = True

@@ -21,20 +21,61 @@ _R = lambda theta: np.array([
 class Car():
     __image = load_image("./rsc/img/tiny_car.png")
 
-    def __init__(self, grid):
+    def __init__(self, tile):
         self.rect = self.__image.get_rect()
-        self.grid = grid
+        self.tile = tile
+        self.grid = tile.grid
         self.rel_x = TILE_SIZE // 2
         self.rel_y = TILE_SIZE // 2
         self.speed = 0
         self.velocity = (0, 0)
         self.degree = 0
+        self.alive = True
         return
 
     def update(self):
         self.rel_x += self.velocity[1]
         self.rel_y += self.velocity[0]
-        self.update_grid()
+        self.check_crash()
+        if self.alive:
+            self.update_tile()
+            self.update_grid()
+            print("{} {}".format(self.tile.grid, self.grid))
+
+    # lazy implementation of collision for now
+    # currently, only checks if the center crashed into a wall
+    def check_crash(self):
+        if self.rel_x > TILE_SIZE and self.tile.walls.E:
+            self.alive = False
+        elif self.rel_x < 0 and self.tile.walls.W:
+            self.alive = False
+        elif self.rel_y > TILE_SIZE and self.tile.walls.S:
+            self.alive = False
+        elif self.rel_y < 0 and self.tile.walls.N:
+            self.alive = False
+        return
+
+    def update_tile(self):
+        if self.rel_x > TILE_SIZE:
+            if self.grid.E == self.tile.next.grid:
+                self.tile = self.tile.next
+            else:
+                self.tile = self.tile.prev
+        elif self.rel_x < 0:
+            if self.grid.W == self.tile.next.grid:
+                self.tile = self.tile.next
+            else:
+                self.tile = self.tile.prev
+        elif self.rel_y > TILE_SIZE:
+            if self.grid.S == self.tile.next.grid:
+                self.tile = self.tile.next
+            else:
+                self.tile = self.tile.prev
+        elif self.rel_y < 0:
+            if self.grid.N == self.tile.next.grid:
+                self.tile = self.tile.next
+            else:
+                self.tile = self.tile.prev
 
     def update_grid(self):
         if self.rel_x > TILE_SIZE:

@@ -16,13 +16,19 @@ class Environment:
         self.track = Track()
         self.start_grid = self.track.get_start_grid()
         self.cars = []
+        self.num_alive = 0
 
     def add_cars(self, cars):
         self.cars += cars
+        self.num_alive += len(cars)
 
     def update(self, events):
         for car in self.cars:
             car.update()
+        for car in self.cars[:]:
+            if not car.alive:
+                self.cars.remove(car)
+                self.num_alive -= 1
 
     # should have a template surface to only add cars
     def get_surface(self):
