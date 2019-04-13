@@ -30,6 +30,7 @@ class Car():
         self.speed = 0
         self.velocity = (0, 0)
         self.degree = 0
+        self.score = 0
         self.alive = True
         return
 
@@ -59,23 +60,31 @@ class Car():
         if self.rel_x > TILE_SIZE:
             if self.grid.E == self.tile.next.grid:
                 self.tile = self.tile.next
+                self.score += 1
             else:
                 self.tile = self.tile.prev
+                self.score -= 1
         elif self.rel_x < 0:
             if self.grid.W == self.tile.next.grid:
                 self.tile = self.tile.next
+                self.score += 1
             else:
                 self.tile = self.tile.prev
+                self.score -= 1
         elif self.rel_y > TILE_SIZE:
             if self.grid.S == self.tile.next.grid:
                 self.tile = self.tile.next
+                self.score += 1
             else:
                 self.tile = self.tile.prev
+                self.score -= 1
         elif self.rel_y < 0:
             if self.grid.N == self.tile.next.grid:
                 self.tile = self.tile.next
+                self.score += 1
             else:
                 self.tile = self.tile.prev
+                self.score -= 1
 
     def update_grid(self):
         if self.rel_x > TILE_SIZE:
