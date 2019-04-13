@@ -60,8 +60,6 @@ def get_track_pos_list(arr):
 
 def get_track_tile_list(track_pos_list):
     result = []
-    start_tile = TrackTile(track_pos_list[0][0], track_pos_list[0][1])
-    previous_tile = start_tile
 
     for pos in track_pos_list:
         if result:
@@ -76,6 +74,26 @@ def get_track_tile_list(track_pos_list):
     # connect the end points to complete the loop
     result[-1].next = result[0]
     result[0].prev = result[-1]
+
+    for track_tile in result:
+        prev_tile = track_tile.prev
+        next_tile = track_tile.next
+        if track_tile.grid_x < next_tile.grid_x:
+            track_tile.walls['r'] = False
+        if track_tile.grid_x > next_tile.grid_x:
+            track_tile.walls['l'] = False
+        if track_tile.grid_y < next_tile.grid_y:
+            track_tile.walls['b'] = False
+        if track_tile.grid_y > next_tile.grid_y:
+            track_tile.walls['t'] = False
+        if track_tile.grid_x < prev_tile.grid_x:
+            track_tile.walls['r'] = False
+        if track_tile.grid_x > prev_tile.grid_x:
+            track_tile.walls['l'] = False
+        if track_tile.grid_y < prev_tile.grid_y:
+            track_tile.walls['b'] = False
+        if track_tile.grid_y > prev_tile.grid_y:
+            track_tile.walls['t'] = False
     return result
 
 # this process is pretty mess at the moment
@@ -100,7 +118,7 @@ class Track():
     def create_surface(self):
         surface = pygame.Surface(RESOLUTION, pygame.SRCALPHA)
         for track_tile in self.track_tiles:
-            surface.blit(self.__image, track_tile.rect)
+            surface.blit(track_tile.get_surface(), track_tile.rect)
         return surface
 
     def get_start_grid(self):
@@ -111,6 +129,14 @@ class Track():
 
 class TrackTile():
     __image = load_image("./rsc/img/track_tile.png")
+    __images = {
+        "tb": load_image("./rsc/img/track_tile_tb.png"),
+        "tl": load_image("./rsc/img/track_tile_tl.png"),
+        "tr": load_image("./rsc/img/track_tile_tr.png"),
+        "bl": load_image("./rsc/img/track_tile_bl.png"),
+        "br": load_image("./rsc/img/track_tile_br.png"),
+        "lr": load_image("./rsc/img/track_tile_lr.png"),
+    }
 
     def __init__(self, grid_x, grid_y):
         self.rect = self.__image.get_rect()
@@ -121,6 +147,22 @@ class TrackTile():
         self.rect.center = (self.x, self.y)
         self.prev = None
         self.next = None
+        self.walls = {
+            "t": True,
+            "b": True,
+            "l": True,
+            "r": True,
+        }
 
     def get_surface(self):
-        return self.__image
+        key = ""
+        if not self.walls["t"]:
+            key += "t"
+        if not self.walls["b"]:
+            key += "b"
+        if not self.walls["l"]:
+            key += "l"
+        if not self.walls["r"]:
+            key += "r"
+        
+        return self.__images[key]
