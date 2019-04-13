@@ -49,6 +49,7 @@ class Directions:
         return cls.__instance
 
     def __init__(self):
+        self.count = 0
         return
 
     def __iter__(self):

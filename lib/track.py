@@ -3,9 +3,8 @@ import random
 import numpy as np
 import pygame
 
-import lib
 from lib import constants as const
-from lib.grid import Grid, Directions
+from lib.grid import Grid
 
 pygame.init()
 
@@ -46,10 +45,8 @@ def arr_to_grids(arr):
 
         # if any of the adjacent grid is the same as the starting grid
         # and the length of the result is sufficient, we've completed the loop
-        if (
-            any([adjacent == start for adjacent in adjacents]) and
-            len(result) > 2
-        ):
+        if any([adjacent == start for adjacent in adjacents]) \
+            and len(result) > 2:
             break
 
         for adjacent in adjacents:
@@ -108,7 +105,7 @@ class Track():
         return surface
 
     def get_start_grid(self):
-        return (self.start_tile.grid)
+        return self.start_tile.grid
 
     def get_surface(self):
         return self.surface

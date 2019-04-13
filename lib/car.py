@@ -1,6 +1,6 @@
 import pygame
 import numpy as np
-import lib
+
 from lib.constants import TILE_SIZE
 
 ACC_RATE = 0.2
@@ -18,13 +18,13 @@ _R = lambda theta: np.array([
     [np.sin(theta), np.cos(theta)],
 ])
 
+# a car is only aware of the tile it is currently on
 class Car():
     __image = load_image("./rsc/img/tiny_car.png")
 
     def __init__(self, tile):
         self.rect = self.__image.get_rect()
         self.tile = tile
-        self.grid = tile.grid
         self.rel_x = TILE_SIZE // 2
         self.rel_y = TILE_SIZE // 2
         self.speed = 0
@@ -40,8 +40,7 @@ class Car():
         self.check_crash()
         if self.alive:
             self.update_tile()
-            self.update_grid()
-            print("{} {}".format(self.tile.grid, self.grid))
+            print("{}".format(self.tile.grid))
 
     # lazy implementation of collision for now
     # currently, only checks if the center crashed into a wall
@@ -58,48 +57,41 @@ class Car():
 
     def update_tile(self):
         if self.rel_x > TILE_SIZE:
-            if self.grid.E == self.tile.next.grid:
+            if self.tile.grid.E == self.tile.next.grid:
+                self.rel_x -= TILE_SIZE
                 self.tile = self.tile.next
                 self.score += 1
             else:
+                self.rel_x -= TILE_SIZE
                 self.tile = self.tile.prev
                 self.score -= 1
         elif self.rel_x < 0:
-            if self.grid.W == self.tile.next.grid:
+            if self.tile.grid.W == self.tile.next.grid:
+                self.rel_x += TILE_SIZE
                 self.tile = self.tile.next
                 self.score += 1
             else:
+                self.rel_x += TILE_SIZE
                 self.tile = self.tile.prev
                 self.score -= 1
         elif self.rel_y > TILE_SIZE:
-            if self.grid.S == self.tile.next.grid:
+            if self.tile.grid.S == self.tile.next.grid:
+                self.rel_y -= TILE_SIZE
                 self.tile = self.tile.next
                 self.score += 1
             else:
+                self.rel_y -= TILE_SIZE
                 self.tile = self.tile.prev
                 self.score -= 1
         elif self.rel_y < 0:
-            if self.grid.N == self.tile.next.grid:
+            if self.tile.grid.N == self.tile.next.grid:
+                self.rel_y += TILE_SIZE
                 self.tile = self.tile.next
                 self.score += 1
             else:
+                self.rel_y += TILE_SIZE
                 self.tile = self.tile.prev
                 self.score -= 1
-
-    def update_grid(self):
-        if self.rel_x > TILE_SIZE:
-            self.grid = self.grid.E
-            self.rel_x -= TILE_SIZE
-        elif self.rel_x < 0:
-            self.grid = self.grid.W
-            self.rel_x += TILE_SIZE
-        elif self.rel_y > TILE_SIZE:
-            self.grid = self.grid.S
-            self.rel_y -= TILE_SIZE
-        elif self.rel_y < 0:
-            self.grid = self.grid.N
-            self.rel_y += TILE_SIZE
-        return
 
     def handle_events(self, events):
         if events.acc and self.speed < SPD_LIMIT:
@@ -121,7 +113,7 @@ class Car():
 
     def get_rect(self):
         self.rect.center = (
-            (self.grid.x * TILE_SIZE) + self.rel_x,
-            (self.grid.y * TILE_SIZE) + self.rel_y,
+            (self.tile.grid.x * TILE_SIZE) + self.rel_x,
+            (self.tile.grid.y * TILE_SIZE) + self.rel_y,
         )
         return self.rect

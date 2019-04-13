@@ -23,7 +23,7 @@ class Environment:
         self.cars += cars
         self.num_alive += len(cars)
 
-    def update(self, events):
+    def update(self):
         for car in self.cars:
             car.update()
         self.score = max([car.score for car in self.cars])
