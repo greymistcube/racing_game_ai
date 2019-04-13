@@ -3,7 +3,8 @@ import numpy as np
 import pygame
 
 import lib
-from lib.constants import RESOLUTION, WIDTH, HEIGHT, GREEN, TILE_SIZE
+from lib import constants as const
+from lib.grid import Grid, Directions
 
 pygame.init()
 
@@ -12,7 +13,7 @@ def load_image(file):
     return image
 
 # temporary method for creating an array representation of a track
-def get_track_arr():
+def create_track_arr():
     temp = np.zeros((10, 14), dtype='int')
     temp[:, 0] = 1
     temp[:, -1] = 1
@@ -23,58 +24,57 @@ def get_track_arr():
     result[1:-1, 1:-1] += temp
     return result
 
-def get_track_pos_list(arr):
+def arr_to_grids(arr):
     result = []
     # find the most upper left coordinate with value not equal to zero
     # and set it as a temporary starting point
     for i, _ in enumerate(arr):
         for j, _ in enumerate(arr):
             if arr[i][j]:
-                result.append((j, i))
+                result.append(Grid(j, i))
                 break
         if result:
             break
 
+    start = result[0]
     while True:
         current = result[-1]
 
-        # four adjacent coordinates to check
-        adjacents = (
-            (current[0] - 1, current[1]),
-            (current[0] + 1, current[1]),
-            (current[0], current[1] - 1),
-            (current[0], current[1] + 1),
-        )
+        # get four adjacent grids to check
+        adjacents = current.adjacents()
 
-        # if any of the adjacent position is the same as the starting position
+        # if any of the adjacent grid is the same as the starting grid
         # and the length of the result is sufficient, we've completed the loop
-        if any([pos == result[0] for pos in adjacents]) and len(result) > 2:
+        if (
+            any([adjacent == start for adjacent in adjacents]) and
+            len(result) > 2
+        ):
             break
 
-        for pos in adjacents:
-            if arr[pos[1]][pos[0]] and pos not in result:
-                result.append(pos)
+        for adjacent in adjacents:
+            if arr[adjacent.y][adjacent.x] and adjacent not in result:
+                result.append(adjacent)
                 break
 
     return result
 
-def get_track_tile_list(track_pos_list):
+def grids_to_tiles(grids):
     result = []
 
-    for pos in track_pos_list:
+    for grid in grids:
         if result:
             previous_tile = result[-1]
-            current_tile = TrackTile(pos[0], pos[1])
+            current_tile = TrackTile(grid)
             previous_tile.next = current_tile
             current_tile.prev = previous_tile
             result.append(current_tile)
         else:
-            result.append(TrackTile(pos[0], pos[1]))
+            result.append(TrackTile(grid))
 
     # connect the end points to complete the loop
     result[-1].next = result[0]
     result[0].prev = result[-1]
-
+    """
     for track_tile in result:
         prev_tile = track_tile.prev
         next_tile = track_tile.next
@@ -94,15 +94,16 @@ def get_track_tile_list(track_pos_list):
             track_tile.walls['b'] = False
         if track_tile.grid_y > prev_tile.grid_y:
             track_tile.walls['t'] = False
+    """
     return result
 
 # this process is pretty mess at the moment
 # might need some cleanup
 def create_track():
-    arr = get_track_arr()
-    track_pos_list = get_track_pos_list(arr)
-    result = get_track_tile_list(track_pos_list)
-    return result
+    arr = create_track_arr()
+    grids = arr_to_grids(arr)
+    tiles = grids_to_tiles(grids)
+    return tiles
 
 # track object is basically a wrapper for a doubly linked list
 # the object itself does not handle the creation process
@@ -116,13 +117,13 @@ class Track():
         self.surface = self.create_surface()
 
     def create_surface(self):
-        surface = pygame.Surface(RESOLUTION, pygame.SRCALPHA)
+        surface = pygame.Surface(const.RESOLUTION, pygame.SRCALPHA)
         for track_tile in self.track_tiles:
             surface.blit(track_tile.get_surface(), track_tile.rect)
         return surface
 
     def get_start_grid(self):
-        return (self.start_tile.grid_x, self.start_tile.grid_y)
+        return (self.start_tile.grid)
 
     def get_surface(self):
         return self.surface
@@ -138,31 +139,14 @@ class TrackTile():
         "lr": load_image("./rsc/img/track_tile_lr.png"),
     }
 
-    def __init__(self, grid_x, grid_y):
+    def __init__(self, grid):
         self.rect = self.__image.get_rect()
-        self.grid_x = grid_x
-        self.grid_y = grid_y
-        self.x = (self.grid_x * TILE_SIZE) + (TILE_SIZE // 2)
-        self.y = (self.grid_y * TILE_SIZE) + (TILE_SIZE // 2)
+        self.grid = grid
+        self.x = (self.grid.x * const.TILE_SIZE) + (const.TILE_SIZE // 2)
+        self.y = (self.grid.y * const.TILE_SIZE) + (const.TILE_SIZE // 2)
         self.rect.center = (self.x, self.y)
         self.prev = None
         self.next = None
-        self.walls = {
-            "t": True,
-            "b": True,
-            "l": True,
-            "r": True,
-        }
 
     def get_surface(self):
-        key = ""
-        if not self.walls["t"]:
-            key += "t"
-        if not self.walls["b"]:
-            key += "b"
-        if not self.walls["l"]:
-            key += "l"
-        if not self.walls["r"]:
-            key += "r"
-        
-        return self.__images[key]
+        return self.__image

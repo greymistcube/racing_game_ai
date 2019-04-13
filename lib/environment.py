@@ -33,5 +33,5 @@ class Environment:
 
         surface.blit(self.track.get_surface(), (0, 0))
         for car in self.cars:
-            surface.blit(car.get_surface(), car.rect)
+            surface.blit(car.get_surface(), car.get_rect())
         return surface

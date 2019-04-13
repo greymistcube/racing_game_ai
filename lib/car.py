@@ -23,20 +23,32 @@ class Car():
 
     def __init__(self, grid):
         self.rect = self.__image.get_rect()
-        self.grid_x = grid[0]
-        self.grid_y = grid[1]
-        self.x = (self.grid_x * TILE_SIZE) + (TILE_SIZE // 2)
-        self.y = (self.grid_y * TILE_SIZE) + (TILE_SIZE // 2)
-        self.rect.center = (self.x, self.y)
+        self.grid = grid
+        self.rel_x = TILE_SIZE // 2
+        self.rel_y = TILE_SIZE // 2
         self.speed = 0
         self.velocity = (0, 0)
         self.degree = 0
         return
 
     def update(self):
-        self.x += self.velocity[1]
-        self.y += self.velocity[0]
-        self.rect.center = (self.x, self.y)
+        self.rel_x += self.velocity[1]
+        self.rel_y += self.velocity[0]
+        self.update_grid()
+
+    def update_grid(self):
+        if self.rel_x > TILE_SIZE:
+            self.grid.x += 1
+            self.rel_x -= TILE_SIZE
+        if self.rel_x < 0:
+            self.grid.x -= 1
+            self.rel_x += TILE_SIZE
+        if self.rel_y > TILE_SIZE:
+            self.grid.y += 1
+            self.rel_y -= TILE_SIZE
+        if self.rel_y < 0:
+            self.grid.y -= 1
+            self.rel_y += TILE_SIZE
 
     def handle_events(self, events):
         if events.acc and self.speed < SPD_LIMIT:
@@ -55,3 +67,10 @@ class Car():
 
     def get_surface(self):
         return pygame.transform.rotate(self.__image, self.degree)
+
+    def get_rect(self):
+        self.rect.center = (
+            (self.grid.x * TILE_SIZE) + self.rel_x,
+            (self.grid.y * TILE_SIZE) + self.rel_y,
+        )
+        return self.rect
