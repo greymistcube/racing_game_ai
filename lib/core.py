@@ -1,4 +1,3 @@
-import numpy as np
 import pygame
 
 import lib.constants as const
@@ -31,7 +30,6 @@ class TextRenderer:
         return surface
 
 class Core:
-
     def __init__(self):
         self.text_renderer = TextRenderer()
         self.game_count = 0

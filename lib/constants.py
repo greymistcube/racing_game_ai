@@ -3,20 +3,9 @@ WIDTH, HEIGHT = (320, 240)
 RESOLUTION = (WIDTH, HEIGHT)
 ZOOM_LEVEL = 2
 
-# game objects
+# game mechanics
 TILE_SIZE = 20
-START_POSITION = (80, 80)
-HOLE_SIZE = 80
-HOLE_Y_VARIANCE = 40
-
-# mechenics
-GRAVITY = 0.2
-MOVE_SPEED = -2
-
-# other settings
-TICKRATE = 60
-WALL_SPEED = -1
-CLOUD_SPEED = -0.5
+TILE_SCORE = 100
 
 # predefined color tuples
 WHITE = (255, 255, 255)

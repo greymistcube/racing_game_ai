@@ -42,7 +42,7 @@ class Directions:
     S = Grid(0, 1)
     W = Grid(-1, 0)
 
-    # implementing this class as singleton
+    # implementing this class as a singleton
     def __new__(cls, *args, **kwargs):
         if cls.__instance is None:
             cls.__instance = super().__new__(cls)
@@ -68,3 +68,14 @@ class Directions:
             return self.W
         else:
             raise StopIteration
+
+    @classmethod
+    def to_degrees(cls, direction):
+        if direction == cls.E:
+            return 0
+        if direction == cls.N:
+            return 90
+        if direction == cls.W:
+            return 180
+        if direction == cls.S:
+            return 270
