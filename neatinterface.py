@@ -2,7 +2,7 @@ import neat
 import lib
 
 from lib.settings import Settings
-from lib.constants import WIDTH, HEIGHT
+import lib.constants as const
 
 settings = Settings()
 
@@ -13,7 +13,7 @@ settings = Settings()
 class NeatCore(lib.Core):
     # game specific variables
     __num_input = 6
-    __num_output = 1
+    __num_output = 4
 
     # overriden methods
     def __init__(self):
@@ -21,24 +21,24 @@ class NeatCore(lib.Core):
         self.population = neat.Population(
             self.__num_input,
             self.__num_output,
-            pop_size=settings.num_balls
+            pop_size=settings.num_cars
         )
         return
 
-    def new_balls(self):
-        return [SmartBall(genome) for genome in self.population.genomes]
+    def new_cars(self):
+        return [SmartCar(genome) for genome in self.population.genomes]
 
     def update(self):
         self.events.update()
         settings.update(self.events)
         # only cycle through balls alive in the environment for optimization
-        for ball in self.env.balls:
-            ball.think(self.get_x(ball, self.env.walls))
-        self.env.update(self.events)
+        for car in self.env.cars:
+            car.think(self.get_x(car))
+        self.env.update()
 
     def game_over(self):
         if self.env.game_over():
-            scores = [ball.score for ball in self.balls]
+            scores = [car.score for car in self.cars]
             self.population.score_genomes(scores)
             self.population.evolve_population()
             return True
@@ -47,16 +47,16 @@ class NeatCore(lib.Core):
 
     def get_info_surface(self):
         num_survived = sum([
-            ball.color == "blue" and ball.alive
-            for ball in self.env.balls
+            car.color == "blue" and car.alive
+            for car in self.env.cars
         ])
         num_mutated = sum([
-            ball.color == "green" and ball.alive
-            for ball in self.env.balls
+            car.color == "green" and car.alive
+            for car in self.env.cars
         ])
         num_bred = sum([
-            ball.color == "yellow" and ball.alive
-            for ball in self.env.balls
+            car.color == "yellow" and car.alive
+            for car in self.env.cars
         ])
 
         texts = [
@@ -71,20 +71,22 @@ class NeatCore(lib.Core):
         return self.text_renderer.texts_to_surface(texts)
 
     # extended methods
-    def get_x(self, ball, walls):
-        if ball.alive:
+    def get_x(self, car):
+        if car.alive:
             return [
-                ball.velocity / 100,
-                ball.y / HEIGHT,
-                walls[0].x / WIDTH,
-                walls[0].y / HEIGHT,
-                walls[1].x / WIDTH,
-                walls[1].y / HEIGHT
+                car.rel_x / const.TILE_SIZE,
+                car.rel_y / const.TILE_SIZE,
+                car.velocity[0],
+                car.velocity[1],
+                car.tile.direction.x,
+                car.tile.direction.y,
             ]
+        # this part shouldn't really happen since
+        # only living cars can think
         else:
             return [0] * self.__num_input
 
-class SmartBall(lib.objects.Ball):
+class SmartCar(lib.car.Car):
     __genome_to_color = {
         "survived": "blue",
         "mutated": "green",
@@ -97,12 +99,21 @@ class SmartBall(lib.objects.Ball):
 
         # override randomized color
         self.genome = genome
-        self.color = self.get_color(genome)
+        self.surface = self.__images[self.get_color(genome)]
 
     def get_color(self, genome):
         return self.__genome_to_color[genome.genome_type]
-    
+
     def think(self, x):
-        if self.genome.predict(x)[0]:
-            self.jump()
+        pred = self.genome.predict(x)
+        if pred[0] and self.speed < const.SPD_LIMIT:
+            self.speed += const.ACC_RATE
+        if pred[1] and self.speed > -const.SPD_LIMIT:
+            self.speed -= const.ACC_RATE
+        if pred[2]:
+            self.degree += const.TURN_SPD
+        if pred[3]:
+            self.degree -= const.TURN_SPD
+        self.degree = self.degree % 360
+        self.velocity = self.get_velocity()
         return

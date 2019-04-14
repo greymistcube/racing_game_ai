@@ -43,9 +43,12 @@ class Core:
     def new_game(self):
         self.game_count += 1
         self.env = Environment()
-        self.cars = [Car(self.env.track.start_tile)]
+        self.cars = self.new_cars()
         self.env.add_cars(self.cars)
         return
+
+    def new_cars(self):
+        return [Car(self.env.track.start_tile) for _ in range(settings.num_cars)]
 
     def update(self):
         self.events.update()
@@ -55,7 +58,7 @@ class Core:
         self.env.update()
 
     def game_over(self):
-        return self.env.num_alive == 0
+        return self.env.game_over()
 
     def get_surface(self):
         surface = self.env.get_surface()

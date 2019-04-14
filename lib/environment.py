@@ -32,6 +32,9 @@ class Environment:
                 self.cars.remove(car)
                 self.num_alive -= 1
 
+    def game_over(self):
+        return self.num_alive == 0
+
     # should have a template surface to only add cars
     def get_surface(self):
         surface = pygame.Surface(const.RESOLUTION, pygame.SRCALPHA)

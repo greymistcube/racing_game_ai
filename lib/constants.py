@@ -4,9 +4,14 @@ RESOLUTION = (WIDTH, HEIGHT)
 ZOOM_LEVEL = 2
 TICKRATE = 60
 
-# game mechanics
+# environment variables
 TILE_SIZE = 20
 TILE_SCORE = 100
+
+# car variables
+ACC_RATE = 0.2
+SPD_LIMIT = 2
+TURN_SPD = 4.5
 
 # predefined color tuples
 WHITE = (255, 255, 255)

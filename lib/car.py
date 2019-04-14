@@ -1,12 +1,10 @@
+import random
+
 import pygame
 import numpy as np
 
 import lib.constants as const
 from lib.grid import Grid, Directions
-
-ACC_RATE = 0.2
-SPD_LIMIT = 2
-TURN_SPD = 4.5
 
 pygame.init()
 
@@ -25,9 +23,19 @@ _grid_offset = lambda x, y: Grid(_axis_offset(x), _axis_offset(y))
 # a car is only aware of the tile it is currently on
 class Car():
     __image = load_image("./rsc/img/tiny_car.png")
+    __images = {
+        "blue": load_image("./rsc/img/blue_car.png"),
+        "green": load_image("./rsc/img/green_car.png"),
+        "yellow": load_image("./rsc/img/yellow_car.png"),
+        "red": load_image("./rsc/img/red_car.png"),
+    }
 
-    def __init__(self, tile):
+    def __init__(self, tile, color=None):
         self.rect = self.__image.get_rect()
+        if color is None:
+            self.surface = random.choice(list(self.__images.values()))
+        else:
+            self.surface = self.__images[color]
         self.tile = tile
         self.rel_x = const.TILE_SIZE // 2
         self.rel_y = const.TILE_SIZE // 2
@@ -78,14 +86,14 @@ class Car():
         return
 
     def handle_events(self, events):
-        if events.acc and self.speed < SPD_LIMIT:
-            self.speed += ACC_RATE
-        if events.dec and self.speed > -SPD_LIMIT:
-            self.speed -= ACC_RATE
+        if events.acc and self.speed < const.SPD_LIMIT:
+            self.speed += const.ACC_RATE
+        if events.dec and self.speed > -const.SPD_LIMIT:
+            self.speed -= const.ACC_RATE
         if events.left:
-            self.degree += TURN_SPD
+            self.degree += const.TURN_SPD
         if events.right:
-            self.degree -= TURN_SPD
+            self.degree -= const.TURN_SPD
         self.degree = self.degree % 360
         self.velocity = self.get_velocity()
 
@@ -93,7 +101,7 @@ class Car():
         return np.matmul(_R(np.radians(self.degree)), (0, 1)) * self.speed
 
     def get_surface(self):
-        return pygame.transform.rotate(self.__image, self.degree)
+        return pygame.transform.rotate(self.surface, self.degree)
 
     def get_rect(self):
         self.rect.center = (
