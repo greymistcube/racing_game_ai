@@ -1,10 +1,17 @@
+import pygame
+
 import neat
 import lib
 
 from lib.settings import Settings
 import lib.constants as const
 
+pygame.init()
 settings = Settings()
+
+def load_image(file):
+    image = pygame.image.load(file)
+    return image
 
 # game specific neat interface
 # this straps on to the original Core class
@@ -26,7 +33,7 @@ class NeatCore(lib.Core):
         return
 
     def new_cars(self):
-        return [SmartCar(genome) for genome in self.population.genomes]
+        return [SmartCar(self.env.track.start_tile, genome) for genome in self.population.genomes]
 
     def update(self):
         self.events.update()
@@ -47,15 +54,15 @@ class NeatCore(lib.Core):
 
     def get_info_surface(self):
         num_survived = sum([
-            car.color == "blue" and car.alive
+            car.genome.genome_type == "survived" and car.alive
             for car in self.env.cars
         ])
         num_mutated = sum([
-            car.color == "green" and car.alive
+            car.genome.genome_type == "mutated" and car.alive
             for car in self.env.cars
         ])
         num_bred = sum([
-            car.color == "yellow" and car.alive
+            car.genome.genome_type == "bred" and car.alive
             for car in self.env.cars
         ])
 
@@ -93,9 +100,16 @@ class SmartCar(lib.car.Car):
         "bred": "yellow",
         "diverged": "red"
     }
+    # dunder variables don't get inherited?
+    __images = {
+        "blue": load_image("./rsc/img/blue_car.png"),
+        "green": load_image("./rsc/img/green_car.png"),
+        "yellow": load_image("./rsc/img/yellow_car.png"),
+        "red": load_image("./rsc/img/red_car.png"),
+    }
 
-    def __init__(self, genome):
-        super().__init__()
+    def __init__(self, tile, genome, color=None):
+        super().__init__(tile)
 
         # override randomized color
         self.genome = genome

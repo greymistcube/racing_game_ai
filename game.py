@@ -5,6 +5,8 @@ from lib.settings import Settings
 import lib.constants as const
 import argparser
 
+import neatinterface
+
 pygame.init()
 
 if __name__ == "__main__":
@@ -18,7 +20,10 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
 
     settings = Settings(args)
-    core = lib.Core()
+    if args.ai == "neat":
+        core = neatinterface.NeatCore()
+    else:
+        core = lib.Core()
     core.new_game()
 
     # main loop
