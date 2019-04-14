@@ -10,12 +10,12 @@ pygame.init()
 settings = Settings()
 
 class TextRenderer:
-    __font = pygame.font.Font("./rsc/font/munro.ttf", 10)
-    __line_height = __font.get_linesize()
+    _font = pygame.font.Font("./rsc/font/munro.ttf", 10)
+    _line_height = _font.get_linesize()
 
     # render a single line of text
     def text_to_surface(self, text):
-        return self.__font.render(text, False, const.BLACK)
+        return self._font.render(text, False, const.BLACK)
 
     # render multiple lines of texts
     def texts_to_surface(self, texts):
@@ -23,12 +23,12 @@ class TextRenderer:
         surface = pygame.Surface(
             (
                 max(text_surface.get_width() for text_surface in text_surfaces),
-                len(text_surfaces) * self.__line_height
+                len(text_surfaces) * self._line_height
             ),
             pygame.SRCALPHA
         )
         for i, text_surface in enumerate(text_surfaces):
-            surface.blit(text_surface, (0, self.__line_height * i))
+            surface.blit(text_surface, (0, self._line_height * i))
         return surface
 
 class Core:

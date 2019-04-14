@@ -1,10 +1,14 @@
+import random
+
+import numpy as np
 import pygame
 
 import neat
 import lib
 
-from lib.settings import Settings
 import lib.constants as const
+from lib.settings import Settings
+from lib.grid import Directions
 
 pygame.init()
 settings = Settings()
@@ -19,15 +23,15 @@ def load_image(file):
 # and adding extensions
 class NeatCore(lib.Core):
     # game specific variables
-    __num_input = 6
-    __num_output = 4
+    _num_input = 4
+    _num_output = 4
 
     # overriden methods
     def __init__(self):
         super().__init__()
         self.population = neat.Population(
-            self.__num_input,
-            self.__num_output,
+            self._num_input,
+            self._num_output,
             pop_size=settings.num_cars
         )
         return
@@ -80,32 +84,33 @@ class NeatCore(lib.Core):
     # extended methods
     def get_x(self, car):
         if car.alive:
+            degrees_diff = (car.degrees - Directions.to_degrees(car.tile.direction)) % 360
             return [
-                car.rel_x / const.TILE_SIZE,
-                car.rel_y / const.TILE_SIZE,
-                car.velocity[0],
-                car.velocity[1],
-                car.tile.direction.x,
-                car.tile.direction.y,
+                # car.rel_x / const.TILE_SIZE,
+                # car.rel_y / const.TILE_SIZE,
+                # const.TILE_SIZE - (car.rel_x / const.TILE_SIZE),
+                # const.TILE_SIZE - (car.rel_y / const.TILE_SIZE),
+                (car.rel_x - const.TILE_SIZE // 2) / const.TILE_SIZE,
+                (car.rel_y - const.TILE_SIZE // 2) / const.TILE_SIZE,
+                car.speed,
+                # car.velocity[0],
+                # car.velocity[1],
+                # car.tile.direction.x,
+                # car.tile.direction.y,
+                # np.dot(car.velocity, car.tile.direction.vec),
+                (degrees_diff / 180) if degrees_diff < 180 else (degrees_diff - 360) / 180,
             ]
         # this part shouldn't really happen since
-        # only living cars can think
+        # only living cars are called to think
         else:
-            return [0] * self.__num_input
+            return [0] * self._num_input
 
 class SmartCar(lib.car.Car):
-    __genome_to_color = {
+    _genome_to_color = {
         "survived": "blue",
         "mutated": "green",
         "bred": "yellow",
         "diverged": "red"
-    }
-    # dunder variables don't get inherited?
-    __images = {
-        "blue": load_image("./rsc/img/blue_car.png"),
-        "green": load_image("./rsc/img/green_car.png"),
-        "yellow": load_image("./rsc/img/yellow_car.png"),
-        "red": load_image("./rsc/img/red_car.png"),
     }
 
     def __init__(self, tile, genome, color=None):
@@ -113,10 +118,12 @@ class SmartCar(lib.car.Car):
 
         # override randomized color
         self.genome = genome
-        self.surface = self.__images[self.get_color(genome)]
+        self.surface = self._images[self.get_color(genome)]
+        # randomize starting angle
+        # self.degrees += random.randint(-90, 90) % 360
 
     def get_color(self, genome):
-        return self.__genome_to_color[genome.genome_type]
+        return self._genome_to_color[genome.genome_type]
 
     def think(self, x):
         pred = self.genome.predict(x)
@@ -125,9 +132,9 @@ class SmartCar(lib.car.Car):
         if pred[1] and self.speed > -const.SPD_LIMIT:
             self.speed -= const.ACC_RATE
         if pred[2]:
-            self.degree += const.TURN_SPD
+            self.degrees += const.TURN_SPD
         if pred[3]:
-            self.degree -= const.TURN_SPD
-        self.degree = self.degree % 360
+            self.degrees -= const.TURN_SPD
+        self.degrees = self.degrees % 360
         self.velocity = self.get_velocity()
         return

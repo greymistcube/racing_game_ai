@@ -21,6 +21,14 @@ def create_track_arr(height, width):
     arrs[1][0, width - 2] = 1
     arrs[0] = arrs[0][::-1, :]
     arr = np.vstack(arrs)
+    
+    # simple track test
+    arr = np.zeros((height, width), dtype='int')
+    arr[1, 1:-1] = 1
+    arr[-2, 1:-1] = 1
+    arr[1:-1, 1] = 1
+    arr[1:-1, -2] = 1
+    
     return arr
 
 # modified version of depth first search algorithm

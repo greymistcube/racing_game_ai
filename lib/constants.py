@@ -6,12 +6,14 @@ TICKRATE = 60
 
 # environment variables
 TILE_SIZE = 20
-TILE_SCORE = 100
+TILE_SCORE = 1
+LAPS_PER_GAME = 5
 
 # car variables
 ACC_RATE = 0.2
-SPD_LIMIT = 2
-TURN_SPD = 4.5
+SPD_LIMIT = 1
+TURN_SPD = 3
+TIMER = 60
 
 # predefined color tuples
 WHITE = (255, 255, 255)

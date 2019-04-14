@@ -41,6 +41,8 @@ class Population:
             genome.score = score
         # compute fitness scores that try to give more weight to later improvements
         # not sure if this is optimal
+        # negative scores cause problems so filter them out
+        scores = [score if score > 0 else 0 for score in scores]
         scores = np.power(scores, np.log(self.generation + 1))
         # scores = np.power(scores, 2)
         total_score = scores.sum()

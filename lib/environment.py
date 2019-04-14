@@ -10,7 +10,7 @@ def load_image(file):
     return image
 
 class Environment:
-    __grass_image = load_image("./rsc/img/grass_tile.png")
+    _grass_image = load_image("./rsc/img/grass_tile.png")
 
     def __init__(self):
         self.score = 0
@@ -41,7 +41,7 @@ class Environment:
         for i in range(const.HEIGHT // const.TILE_SIZE):
             for j in range(const.WIDTH // const.TILE_SIZE):
                 surface.blit(
-                    self.__grass_image,
+                    self._grass_image,
                     (j * const.TILE_SIZE, i * const.TILE_SIZE)
                 )
 

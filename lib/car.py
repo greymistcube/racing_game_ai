@@ -22,8 +22,8 @@ _grid_offset = lambda x, y: Grid(_axis_offset(x), _axis_offset(y))
 
 # a car is only aware of the tile it is currently on
 class Car():
-    __image = load_image("./rsc/img/tiny_car.png")
-    __images = {
+    _image = load_image("./rsc/img/tiny_car.png")
+    _images = {
         "blue": load_image("./rsc/img/blue_car.png"),
         "green": load_image("./rsc/img/green_car.png"),
         "yellow": load_image("./rsc/img/yellow_car.png"),
@@ -31,22 +31,24 @@ class Car():
     }
 
     def __init__(self, tile, color=None):
-        self.rect = self.__image.get_rect()
+        self.rect = self._image.get_rect()
         if color is None:
-            self.surface = random.choice(list(self.__images.values()))
+            self.surface = random.choice(list(self._images.values()))
         else:
-            self.surface = self.__images[color]
+            self.surface = self._images[color]
         self.tile = tile
         self.rel_x = const.TILE_SIZE // 2
         self.rel_y = const.TILE_SIZE // 2
         self.speed = 0
         self.velocity = (0, 0)
-        self.degree = Directions.to_degrees(self.tile.direction)
+        self.degrees = Directions.to_degrees(self.tile.direction)
         self.score = 0
+        self.timer = const.TIMER
         self.alive = True
         return
 
     def update(self):
+        self.timer -= 1
         self.rel_x += self.velocity[1]
         self.rel_y += self.velocity[0]
         self.check_crash()
@@ -63,6 +65,8 @@ class Car():
     # this only makes corner turning slightly more tighter
     def check_crash(self):
         grid_offset = _grid_offset(self.rel_x, self.rel_y)
+        if self.timer < 0:
+            self.alive = False
         if self.tile.grid + grid_offset not in [
                 self.tile.prev.grid,
                 self.tile.grid,
@@ -75,12 +79,16 @@ class Car():
         x_axis_offset = _axis_offset(self.rel_x)
         y_axis_offset = _axis_offset(self.rel_y)
         grid_offset = _grid_offset(self.rel_x, self.rel_y)
+        if grid_offset != Grid(0, 0):
+            self.timer = const.TIMER
         if self.tile.grid + grid_offset == self.tile.next.grid:
             self.score += const.TILE_SCORE
             self.tile = self.tile.next
         elif self.tile.grid + grid_offset == self.tile.prev.grid:
             self.score -= const.TILE_SCORE
             self.tile = self.tile.prev
+            # just kill off the car if it goes backwards
+            self.alive = False
         self.rel_x += const.TILE_SIZE * (x_axis_offset * (-1))
         self.rel_y += const.TILE_SIZE * (y_axis_offset * (-1))
         return
@@ -91,17 +99,17 @@ class Car():
         if events.dec and self.speed > -const.SPD_LIMIT:
             self.speed -= const.ACC_RATE
         if events.left:
-            self.degree += const.TURN_SPD
+            self.degrees += const.TURN_SPD
         if events.right:
-            self.degree -= const.TURN_SPD
-        self.degree = self.degree % 360
+            self.degrees -= const.TURN_SPD
+        self.degrees = self.degrees % 360
         self.velocity = self.get_velocity()
 
     def get_velocity(self):
-        return np.matmul(_R(np.radians(self.degree)), (0, 1)) * self.speed
+        return np.matmul(_R(np.radians(self.degrees)), (0, 1)) * self.speed
 
     def get_surface(self):
-        return pygame.transform.rotate(self.surface, self.degree)
+        return pygame.transform.rotate(self.surface, self.degrees)
 
     def get_rect(self):
         self.rect.center = (
