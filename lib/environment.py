@@ -1,6 +1,6 @@
 import pygame
 
-from lib.constants import RESOLUTION, WIDTH, HEIGHT, TILE_SIZE
+import lib.constants as const
 from lib.track import Track
 
 pygame.init()
@@ -34,10 +34,13 @@ class Environment:
 
     # should have a template surface to only add cars
     def get_surface(self):
-        surface = pygame.Surface(RESOLUTION, pygame.SRCALPHA)
-        for i in range(HEIGHT // TILE_SIZE):
-            for j in range(WIDTH // TILE_SIZE):
-                surface.blit(self.__grass_image, (j * TILE_SIZE, i * TILE_SIZE))
+        surface = pygame.Surface(const.RESOLUTION, pygame.SRCALPHA)
+        for i in range(const.HEIGHT // const.TILE_SIZE):
+            for j in range(const.WIDTH // const.TILE_SIZE):
+                surface.blit(
+                    self.__grass_image,
+                    (j * const.TILE_SIZE, i * const.TILE_SIZE)
+                )
 
         surface.blit(self.track.get_surface(), (0, 0))
         for car in self.cars:

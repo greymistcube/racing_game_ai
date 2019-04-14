@@ -3,8 +3,9 @@ WIDTH, HEIGHT = (320, 240)
 RESOLUTION = (WIDTH, HEIGHT)
 ZOOM_LEVEL = 2
 
-# game objects
+# game mechanics
 TILE_SIZE = 20
+TILE_SCORE = 100
 
 # predefined color tuples
 WHITE = (255, 255, 255)

@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
 
-from lib.constants import TILE_SIZE
+import lib.constants as const
 from lib.grid import Grid, Directions
 
 ACC_RATE = 0.2
@@ -19,7 +19,7 @@ _R = lambda theta: np.array([
     [np.sin(theta), np.cos(theta)],
 ])
 
-_axis_offset = lambda val: 1 if val > TILE_SIZE else -1 if val < 0 else 0
+_axis_offset = lambda val: 1 if val > const.TILE_SIZE else -1 if val < 0 else 0
 _grid_offset = lambda x, y: Grid(_axis_offset(x), _axis_offset(y))
 
 # a car is only aware of the tile it is currently on
@@ -29,8 +29,8 @@ class Car():
     def __init__(self, tile):
         self.rect = self.__image.get_rect()
         self.tile = tile
-        self.rel_x = TILE_SIZE // 2
-        self.rel_y = TILE_SIZE // 2
+        self.rel_x = const.TILE_SIZE // 2
+        self.rel_y = const.TILE_SIZE // 2
         self.speed = 0
         self.velocity = (0, 0)
         self.degree = Directions.to_degrees(self.tile.direction)
@@ -68,13 +68,13 @@ class Car():
         y_axis_offset = _axis_offset(self.rel_y)
         grid_offset = _grid_offset(self.rel_x, self.rel_y)
         if self.tile.grid + grid_offset == self.tile.next.grid:
-            self.score += 1
+            self.score += const.TILE_SCORE
             self.tile = self.tile.next
         elif self.tile.grid + grid_offset == self.tile.prev.grid:
-            self.score -= 1
+            self.score -= const.TILE_SCORE
             self.tile = self.tile.prev
-        self.rel_x += TILE_SIZE * (x_axis_offset * (-1))
-        self.rel_y += TILE_SIZE * (y_axis_offset * (-1))
+        self.rel_x += const.TILE_SIZE * (x_axis_offset * (-1))
+        self.rel_y += const.TILE_SIZE * (y_axis_offset * (-1))
         return
 
     def handle_events(self, events):
@@ -97,7 +97,7 @@ class Car():
 
     def get_rect(self):
         self.rect.center = (
-            (self.tile.grid.x * TILE_SIZE) + self.rel_x,
-            (self.tile.grid.y * TILE_SIZE) + self.rel_y,
+            (self.tile.grid.x * const.TILE_SIZE) + self.rel_x,
+            (self.tile.grid.y * const.TILE_SIZE) + self.rel_y,
         )
         return self.rect
