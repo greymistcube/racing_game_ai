@@ -2,7 +2,7 @@ import pygame
 import numpy as np
 
 from lib.constants import TILE_SIZE
-from lib.grid import Grid
+from lib.grid import Grid, Directions
 
 ACC_RATE = 0.2
 SPD_LIMIT = 2
@@ -33,7 +33,7 @@ class Car():
         self.rel_y = TILE_SIZE // 2
         self.speed = 0
         self.velocity = (0, 0)
-        self.degree = 0
+        self.degree = Directions.to_degrees(self.tile.direction)
         self.score = 0
         self.alive = True
         return

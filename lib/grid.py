@@ -68,3 +68,14 @@ class Directions:
             return self.W
         else:
             raise StopIteration
+
+    @classmethod
+    def to_degrees(cls, direction):
+        if direction == cls.E:
+            return 0
+        if direction == cls.N:
+            return 90
+        if direction == cls.W:
+            return 180
+        if direction == cls.S:
+            return 270
