@@ -2,6 +2,7 @@ import pygame
 import numpy as np
 
 from lib.constants import TILE_SIZE
+from lib.grid import Grid
 
 ACC_RATE = 0.2
 SPD_LIMIT = 2
@@ -17,6 +18,9 @@ _R = lambda theta: np.array([
     [np.cos(theta), -np.sin(theta)],
     [np.sin(theta), np.cos(theta)],
 ])
+
+_axis_offset = lambda val: 1 if val > TILE_SIZE else -1 if val < 0 else 0
+_grid_offset = lambda x, y: Grid(_axis_offset(x), _axis_offset(y))
 
 # a car is only aware of the tile it is currently on
 class Car():
@@ -40,58 +44,38 @@ class Car():
         self.check_crash()
         if self.alive:
             self.update_tile()
-            print("{}".format(self.tile.grid))
+            # debug logging
+            print("{} {}".format(self.tile.grid, self.tile.direction))
 
-    # lazy implementation of collision for now
-    # currently, only checks if the center crashed into a wall
+    # lazy implementation of collision
+    # it's easier to crash the car if it doesn't land on
+    # one of its immediate neighbor tiles
+    # although this doesn't fully cover the diagonally crossing cases
+    # those should be rather extreme edge cases
+    # this only makes corner turning slightly more tighter
     def check_crash(self):
-        if self.rel_x > TILE_SIZE and self.tile.walls.E:
-            self.alive = False
-        elif self.rel_x < 0 and self.tile.walls.W:
-            self.alive = False
-        elif self.rel_y > TILE_SIZE and self.tile.walls.S:
-            self.alive = False
-        elif self.rel_y < 0 and self.tile.walls.N:
+        grid_offset = _grid_offset(self.rel_x, self.rel_y)
+        if self.tile.grid + grid_offset not in [
+                self.tile.prev.grid,
+                self.tile.grid,
+                self.tile.next.grid,
+            ]:
             self.alive = False
         return
 
     def update_tile(self):
-        if self.rel_x > TILE_SIZE:
-            if self.tile.grid.E == self.tile.next.grid:
-                self.rel_x -= TILE_SIZE
-                self.tile = self.tile.next
-                self.score += 1
-            else:
-                self.rel_x -= TILE_SIZE
-                self.tile = self.tile.prev
-                self.score -= 1
-        elif self.rel_x < 0:
-            if self.tile.grid.W == self.tile.next.grid:
-                self.rel_x += TILE_SIZE
-                self.tile = self.tile.next
-                self.score += 1
-            else:
-                self.rel_x += TILE_SIZE
-                self.tile = self.tile.prev
-                self.score -= 1
-        elif self.rel_y > TILE_SIZE:
-            if self.tile.grid.S == self.tile.next.grid:
-                self.rel_y -= TILE_SIZE
-                self.tile = self.tile.next
-                self.score += 1
-            else:
-                self.rel_y -= TILE_SIZE
-                self.tile = self.tile.prev
-                self.score -= 1
-        elif self.rel_y < 0:
-            if self.tile.grid.N == self.tile.next.grid:
-                self.rel_y += TILE_SIZE
-                self.tile = self.tile.next
-                self.score += 1
-            else:
-                self.rel_y += TILE_SIZE
-                self.tile = self.tile.prev
-                self.score -= 1
+        x_axis_offset = _axis_offset(self.rel_x)
+        y_axis_offset = _axis_offset(self.rel_y)
+        grid_offset = _grid_offset(self.rel_x, self.rel_y)
+        if self.tile.grid + grid_offset == self.tile.next.grid:
+            self.score += 1
+            self.tile = self.tile.next
+        elif self.tile.grid + grid_offset == self.tile.prev.grid:
+            self.score -= 1
+            self.tile = self.tile.prev
+        self.rel_x += TILE_SIZE * (x_axis_offset * (-1))
+        self.rel_y += TILE_SIZE * (y_axis_offset * (-1))
+        return
 
     def handle_events(self, events):
         if events.acc and self.speed < SPD_LIMIT:

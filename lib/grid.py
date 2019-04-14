@@ -42,7 +42,7 @@ class Directions:
     S = Grid(0, 1)
     W = Grid(-1, 0)
 
-    # implementing this class as singleton
+    # implementing this class as a singleton
     def __new__(cls, *args, **kwargs):
         if cls.__instance is None:
             cls.__instance = super().__new__(cls)

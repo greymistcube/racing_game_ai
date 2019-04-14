@@ -86,26 +86,27 @@ def create_track():
     return tiles
 
 # track object is basically a wrapper for a doubly linked list
+# with a reference only to its starting node
 # the object itself does not handle the creation process
 class Track():
-    __image = load_image("./rsc/img/track_tile.png")
-
     def __init__(self):
         self.track_tiles = create_track()
         # set starting tile. this should be randomized at some point
         self.start_tile = self.track_tiles[0]
         for _ in range(random.randrange(len(self.track_tiles))):
             self.start_tile = self.start_tile.next
-        self.surface = self.create_surface()
+        self.surface = self.set_surface()
 
-    def create_surface(self):
+    def get_start_grid(self):
+        return self.start_tile.grid
+
+    # as a track is static throught a game, create a surface
+    # during initialization
+    def set_surface(self):
         surface = pygame.Surface(const.RESOLUTION, pygame.SRCALPHA)
         for track_tile in self.track_tiles:
             surface.blit(track_tile.get_surface(), track_tile.rect)
         return surface
-
-    def get_start_grid(self):
-        return self.start_tile.grid
 
     def get_surface(self):
         return self.surface
@@ -129,7 +130,8 @@ class TrackTile():
         self.rect.center = (self.x, self.y)
         self.prev = None
         self.next = None
-        self.walls = Walls()
+        self.direction = None
+        # self.walls = Walls()
         self.surface = self.__image
         return
 
@@ -137,17 +139,18 @@ class TrackTile():
         # cardinal direction naming order: n, s, e, w
         key = ""
         if self.grid.N == self.prev.grid or self.grid.N == self.next.grid:
-            self.walls.N = False
+            # self.walls.N = False
             key += "n"
         if self.grid.S == self.prev.grid or self.grid.S == self.next.grid:
-            self.walls.S = False
+            # self.walls.S = False
             key += "s"
         if self.grid.E == self.prev.grid or self.grid.E == self.next.grid:
-            self.walls.E = False
+            # self.walls.E = False
             key += "e"
         if self.grid.W == self.prev.grid or self.grid.W == self.next.grid:
-            self.walls.W = False
+            # self.walls.W = False
             key += "w"
+        self.direction = self.next.grid - self.grid
         self.surface = self.__images[key]
         return
 
