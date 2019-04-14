@@ -1,11 +1,13 @@
 import pygame
 
 import lib.constants as const
+from lib.settings import Settings
 from lib.events import Events
 from lib.environment import Environment
 from lib.car import Car
 
 pygame.init()
+settings = Settings()
 
 class TextRenderer:
     __font = pygame.font.Font("./rsc/font/munro.ttf", 10)
@@ -47,6 +49,7 @@ class Core:
 
     def update(self):
         self.events.update()
+        settings.update(self.events)
         for car in self.cars:
             car.handle_events(self.events)
         self.env.update()

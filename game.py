@@ -1,22 +1,30 @@
 import pygame
 
 import lib
+from lib.settings import Settings
+import lib.constants as const
+import argparser
 
 pygame.init()
 
 if __name__ == "__main__":
+    args = argparser.get_args()
+
     # pygame initialization
     pygame.init()
-    screen = pygame.display.set_mode((320 * 3, 240 * 3))
+    screen = pygame.display.set_mode(
+        (const.WIDTH * args.z, const.HEIGHT * args.z)
+    )
     clock = pygame.time.Clock()
 
+    settings = Settings(args)
     core = lib.Core()
     core.new_game()
 
     # main loop
     while True:
         # set tick rate to 60 per second
-        clock.tick(60)
+        clock.tick(settings.tickrate)
 
         core.update()
 
