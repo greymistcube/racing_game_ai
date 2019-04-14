@@ -45,7 +45,7 @@ class Car():
         if self.alive:
             self.update_tile()
             # debug logging
-            print("{} {}".format(self.tile.grid, self.tile.direction))
+            # print("{} {}".format(self.tile.grid, self.tile.direction))
 
     # lazy implementation of collision
     # it's easier to crash the car if it doesn't land on
