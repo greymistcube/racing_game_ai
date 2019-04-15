@@ -8,7 +8,6 @@ import lib
 
 import lib.constants as const
 from lib.settings import Settings
-from lib.grid import Directions
 
 pygame.init()
 settings = Settings()
@@ -34,6 +33,12 @@ class NeatCore(lib.Core):
             self._num_output,
             pop_size=settings.num_cars
         )
+        self.walls = None
+        return
+
+    def new_game(self):
+        super().new_game()
+        self.walls = get_all_walls(self.env.track)
         return
 
     def new_cars(self):
@@ -84,7 +89,7 @@ class NeatCore(lib.Core):
     # extended methods
     def get_x(self, car):
         if car.alive:
-            degrees_diff = (car.degrees - Directions.to_degrees(car.tile.direction)) % 360
+            degrees_diff = (car.direction.degrees - car.tile.direction.degrees) % 360
             return [
                 # car.rel_x / const.TILE_SIZE,
                 # car.rel_y / const.TILE_SIZE,
@@ -120,7 +125,7 @@ class SmartCar(lib.car.Car):
         self.genome = genome
         self.surface = self._images[self.get_color(genome)]
         # randomize starting angle
-        self.degrees += (random.randint(-10, 10) * 4.5) % 360
+        self.direction.rotate(random.randint(-10, 10) * const.TURN_SPD)
 
     def get_color(self, genome):
         return self._genome_to_color[genome.genome_type]
@@ -132,9 +137,32 @@ class SmartCar(lib.car.Car):
         if pred[1] and self.speed > -const.SPD_LIMIT:
             self.speed -= const.ACC_RATE
         if pred[2]:
-            self.degrees += const.TURN_SPD
+            self.direction.rotate(const.TURN_SPD)
         if pred[3]:
-            self.degrees -= const.TURN_SPD
-        self.degrees = self.degrees % 360
-        self.velocity = self.get_velocity()
+            self.direction.rotate(-const.TURN_SPD)
+        self.velocity = self.direction.vector * self.speed
         return
+
+def get_all_walls(track):
+    walls = []
+    for tile in track.track_tiles:
+        x = tile.grid.x * const.TILE_SIZE
+        y = tile.grid.y * const.TILE_SIZE
+        key = tile.key
+        if "n" not in key:
+            walls.append(
+                ((x, y), (x + const.TILE_SIZE, y))
+            )
+        if "e" not in key:
+            walls.append(
+                ((x + const.TILE_SIZE, y), (x + const.TILE_SIZE, y + const.TILE_SIZE))
+            )
+        if "s" not in key:
+            walls.append(
+                ((x, y + const.TILE_SIZE), (x + const.TILE_SIZE, y + const.TILE_SIZE))
+            )
+        if "w" not in key:
+            walls.append(
+                ((x, y), (x, y + const.TILE_SIZE))
+            )
+    return walls
