@@ -1,21 +1,7 @@
 # this is mostly to simplify the codes in other modules
+import numpy as np
 
-class Vector:
-    def __init__(self, x=0, y=0):
-        self.x = x
-        self.y = y
-
-    def __add__(self, other):
-        return Grid(self.x + other.x, self.y + other.y)
-
-    def __sub__(self, other):
-        return Grid(self.x - other.x, self.y - other.y)
-
-    def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
-
-    def __repr__(self):
-        return "({}, {})".format(self.x, self.y)
+import lib.constants as const
 
 class Grid:
     def __init__(self, x=0, y=0):
@@ -40,18 +26,6 @@ class Grid:
         return [self + cardinal for cardinal in Cardinals()]
 
     @property
-    def degrees(self):
-        if self == Cardinals.E:
-            return 0
-        if self == Cardinals.N:
-            return 90
-        if self == Cardinals.S:
-            return 180
-        if self == Cardinals.W:
-            return 270
-        raise Exception("method called on non cardinal directional grid")
-
-    @property
     def N(self):
         return self + Cardinals.N
 
@@ -69,7 +43,12 @@ class Grid:
 
     @property
     def vec(self):
-        return (self.x, self.y)
+        return np.array([self.x, self.y])
+    
+    @property
+    def scaled(self):
+        return np.array([self.x, self.y]) * const.TILE_SIZE
+
 
 class Cardinals:
     __instance = None

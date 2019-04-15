@@ -7,7 +7,7 @@ _R = lambda theta: np.array([
 
 class Direction:
     def __init__(self, degrees):
-        self.degrees = degrees
+        self.degrees = degrees % 360
         self.vector = self.__degrees_to_vector(self.degrees)
 
     def rotate(self, degrees):
