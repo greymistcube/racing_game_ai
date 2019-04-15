@@ -35,6 +35,10 @@ class Grid:
     def W(self):
         return self + Directions.W
 
+    @property
+    def vec(self):
+        return (self.x, self.y)
+
 class Directions:
     __instance = None
     N = Grid(0, -1)

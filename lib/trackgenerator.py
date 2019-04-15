@@ -21,6 +21,7 @@ def create_track_arr(height, width):
     arrs[1][0, width - 2] = 1
     arrs[0] = arrs[0][::-1, :]
     arr = np.vstack(arrs)
+
     return arr
 
 # modified version of depth first search algorithm

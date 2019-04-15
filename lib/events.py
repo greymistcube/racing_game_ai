@@ -5,6 +5,7 @@ pygame.init()
 
 class Events:
     def __init__(self):
+        self.multiplier = 1
         self.acc = False
         self.dec = False
         self.left = False
@@ -23,4 +24,8 @@ class Events:
         self.dec = pressed_keys[pygame.K_DOWN]
         self.left = pressed_keys[pygame.K_LEFT]
         self.right = pressed_keys[pygame.K_RIGHT]
+        for i, pressed in enumerate(pressed_keys[pygame.K_0:pygame.K_0 + 10]):
+            if pressed:
+                self.multiplier = i
+                break
         return
