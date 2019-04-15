@@ -36,12 +36,14 @@ class Car():
             self.surface = random.choice(list(self._images.values()))
         else:
             self.surface = self._images[color]
+        self.start_tile = tile
         self.tile = tile
         self.rel_x = const.TILE_SIZE // 2
         self.rel_y = const.TILE_SIZE // 2
         self.speed = 0
         self.velocity = (0, 0)
         self.degrees = Directions.to_degrees(self.tile.direction)
+        self.laps = 0
         self.score = 0
         self.timer = const.TIMER
         self.alive = True
@@ -54,8 +56,6 @@ class Car():
         self.check_crash()
         if self.alive:
             self.update_tile()
-            # debug logging
-            # print("{} {}".format(self.tile.grid, self.tile.direction))
 
     # lazy implementation of collision
     # it's easier to crash the car if it doesn't land on
@@ -80,10 +80,16 @@ class Car():
         y_axis_offset = _axis_offset(self.rel_y)
         grid_offset = _grid_offset(self.rel_x, self.rel_y)
         if grid_offset != Grid(0, 0):
+            # self.score += self.timer // 10
             self.timer = const.TIMER
         if self.tile.grid + grid_offset == self.tile.next.grid:
             self.score += const.TILE_SCORE
             self.tile = self.tile.next
+            if self.tile.grid == self.start_tile.grid:
+                self.laps += 1
+                self.score += const.LAP_BONUS
+                if self.laps >= const.LAPS_PER_GAME:
+                    self.alive = False
         elif self.tile.grid + grid_offset == self.tile.prev.grid:
             self.score -= const.TILE_SCORE
             self.tile = self.tile.prev

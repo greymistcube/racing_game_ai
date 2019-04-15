@@ -120,7 +120,7 @@ class SmartCar(lib.car.Car):
         self.genome = genome
         self.surface = self._images[self.get_color(genome)]
         # randomize starting angle
-        # self.degrees += random.randint(-90, 90) % 360
+        self.degrees += (random.randint(-10, 10) * 4.5) % 360
 
     def get_color(self, genome):
         return self._genome_to_color[genome.genome_type]
