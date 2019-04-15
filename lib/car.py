@@ -38,7 +38,7 @@ class Car():
         self.rel_y = const.TILE_SIZE // 2
 
         self.speed = 0
-        # requires a copy since car's direction will change
+        # requires a new instance since car's direction will change
         self.direction = Direction(self.tile.direction.degrees)
         self.velocity = self.direction.vector * self.speed
         self.laps = 0
@@ -63,8 +63,8 @@ class Car():
     # this only makes corner turning slightly more tighter
     def check_crash(self):
         grid_offset = _grid_offset(self.rel_x, self.rel_y)
-        if self.timer < 0:
-            self.alive = False
+        # if self.timer < 0:
+        #     self.alive = False
         if self.tile.grid + grid_offset not in [
                 self.tile.prev.grid,
                 self.tile.grid,

@@ -44,7 +44,7 @@ class Grid:
     @property
     def vec(self):
         return np.array([self.x, self.y])
-    
+
     @property
     def scaled(self):
         return np.array([self.x, self.y]) * const.TILE_SIZE

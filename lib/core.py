@@ -1,10 +1,11 @@
 import pygame
-
+import numpy as np
 import lib.constants as const
 from lib.settings import Settings
 from lib.events import Events
 from lib.environment import Environment
 from lib.car import Car
+import carvision
 
 pygame.init()
 settings = Settings()
@@ -56,6 +57,18 @@ class Core:
         for car in self.cars:
             car.handle_events(self.events)
         self.env.update()
+        ####
+        degrees_delta = carvision.get_singed_degrees_delta(self.cars[0])
+        distances = carvision.get_car_vision(self.cars[0])
+        print(np.array([
+            car.speed,
+            degrees_delta / 180,
+            distances[0],
+            distances[1],
+            distances[2],
+            distances[3],
+        ]).round(2))
+        ####
 
     def game_over(self):
         return self.env.game_over()

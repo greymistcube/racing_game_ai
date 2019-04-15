@@ -79,17 +79,17 @@ class TrackTile():
     def set_track_properties(self):
         # cardinal direction naming order: n, s, e, w
         cardinals = "nsew"
-        key = ""
+        hole = ""
         if self.grid.N == self.prev.grid or self.grid.N == self.next.grid:
-            key += "n"
+            hole += "n"
         if self.grid.S == self.prev.grid or self.grid.S == self.next.grid:
-            key += "s"
+            hole += "s"
         if self.grid.E == self.prev.grid or self.grid.E == self.next.grid:
-            key += "e"
+            hole += "e"
         if self.grid.W == self.prev.grid or self.grid.W == self.next.grid:
-            key += "w"
+            hole += "w"
         for cardinal in cardinals:
-            if cardinal not in key:
+            if cardinal not in hole:
                 self.walls += cardinal
         self.direction = tools.Direction(Cardinals.to_degrees(self.next.grid - self.grid))
         self.surface = self.__images[self.walls]

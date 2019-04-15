@@ -3,11 +3,12 @@ import random
 import numpy as np
 import pygame
 
-import neat
 import lib
-
 import lib.constants as const
 from lib.settings import Settings
+
+import neat
+import carvision
 
 pygame.init()
 settings = Settings()
@@ -22,7 +23,7 @@ def load_image(file):
 # and adding extensions
 class NeatCore(lib.Core):
     # game specific variables
-    _num_input = 4
+    _num_input = 6
     _num_output = 4
 
     # overriden methods
@@ -84,7 +85,17 @@ class NeatCore(lib.Core):
     # extended methods
     def get_x(self, car):
         if car.alive:
-            degrees_diff = (car.direction.degrees - car.tile.direction.degrees) % 360
+            degrees_delta = carvision.get_singed_degrees_delta(car)
+            distances = carvision.get_car_vision(car)
+            return [
+                car.speed,
+                degrees_delta / 180,
+                distances[0],
+                distances[1],
+                distances[2],
+                distances[3],
+            ]
+            """
             return [
                 # car.rel_x / const.TILE_SIZE,
                 # car.rel_y / const.TILE_SIZE,
@@ -100,6 +111,7 @@ class NeatCore(lib.Core):
                 # np.dot(car.velocity, car.tile.direction.vec),
                 (degrees_diff / 180) if degrees_diff < 180 else (degrees_diff - 360) / 180,
             ]
+            """
         # this part shouldn't really happen since
         # only living cars are called to think
         else:
@@ -137,27 +149,3 @@ class SmartCar(lib.car.Car):
             self.direction.rotate(-const.TURN_SPD)
         self.velocity = self.direction.vector * self.speed
         return
-
-def get_all_walls(track):
-    walls = []
-    for tile in track.track_tiles:
-        x = tile.grid.x * const.TILE_SIZE
-        y = tile.grid.y * const.TILE_SIZE
-        key = tile.key
-        if "n" not in key:
-            walls.append(
-                ((x, y), (x + const.TILE_SIZE, y))
-            )
-        if "e" not in key:
-            walls.append(
-                ((x + const.TILE_SIZE, y), (x + const.TILE_SIZE, y + const.TILE_SIZE))
-            )
-        if "s" not in key:
-            walls.append(
-                ((x, y + const.TILE_SIZE), (x + const.TILE_SIZE, y + const.TILE_SIZE))
-            )
-        if "w" not in key:
-            walls.append(
-                ((x, y), (x, y + const.TILE_SIZE))
-            )
-    return walls

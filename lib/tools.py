@@ -1,9 +1,11 @@
 import numpy as np
 
-_R = lambda theta: np.array([
-    [np.cos(theta), -np.sin(theta)],
-    [np.sin(theta), np.cos(theta)],
-])
+def R(degrees):
+    rad = np.radians(degrees)
+    return np.array([
+        [np.cos(rad), -np.sin(rad)],
+        [np.sin(rad), np.cos(rad)],
+    ])
 
 class Direction:
     def __init__(self, degrees):
@@ -15,4 +17,4 @@ class Direction:
         self.vector = self.__degrees_to_vector(self.degrees)
 
     def __degrees_to_vector(self, degrees):
-        return np.matmul(_R(np.radians(degrees)), (0, 1))
+        return np.matmul(R(degrees), (0, 1))
