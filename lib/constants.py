@@ -12,7 +12,7 @@ LAPS_PER_GAME = 2
 
 # car variables
 ACC_RATE = 0.2
-SPD_LIMIT = 2.0
+SPD_LIMIT = 4.0
 TURN_SPD = 3
 TIMER = 100
 
