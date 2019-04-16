@@ -11,7 +11,7 @@ pygame.init()
 settings = Settings()
 
 class TextRenderer:
-    _font = pygame.font.Font("./rsc/font/munro.ttf", 10)
+    _font = pygame.font.Font("./rsc/font/monogram.ttf", 16)
     _line_height = _font.get_linesize()
 
     # render a single line of text
@@ -77,6 +77,8 @@ class Core:
         surface = self.env.get_surface()
         if settings.info:
             surface.blit(self.get_info_surface(), (0, 0))
+        if settings.debug:
+            surface.blit(self.get_debug_surface(), (0, 80))
         return surface
 
     def get_info_surface(self):
@@ -84,6 +86,13 @@ class Core:
             " Game: {}".format(self.game_count),
             " Score: {}".format(self.env.score),
             " Alive: {}".format(self.env.num_alive)
+        ]
+
+        return self.text_renderer.texts_to_surface(texts)
+
+    def get_debug_surface(self):
+        texts = [
+            " Speed: {0: .2f}".format(self.env.cars[0].speed),
         ]
 
         return self.text_renderer.texts_to_surface(texts)
