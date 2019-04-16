@@ -78,7 +78,7 @@ class Car():
         y_axis_offset = _axis_offset(self.rel_y)
         grid_offset = _grid_offset(self.rel_x, self.rel_y)
         if grid_offset != Grid(0, 0):
-            self.score += self.timer // 10
+            self.score += self.timer // 2
             self.timer = const.TIMER
         if self.tile.grid + grid_offset == self.tile.next.grid:
             self.score += const.TILE_SCORE
