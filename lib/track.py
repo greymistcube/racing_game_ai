@@ -14,7 +14,7 @@ def load_image(file):
     return image
 
 # track object is basically a wrapper for a doubly linked list
-# with a reference only to its starting node
+# with a reference to its starting node
 # the object itself does not handle the creation process
 class Track():
     __start_line_image = load_image("./rsc/img/start_line.png")
@@ -72,7 +72,7 @@ class TrackTile():
         self.prev = None
         self.next = None
         self.direction = None
-        self.walls = ""
+        self.key = ""
         self.surface = self.__image
         return
 
@@ -90,9 +90,9 @@ class TrackTile():
             hole += "w"
         for cardinal in cardinals:
             if cardinal not in hole:
-                self.walls += cardinal
+                self.key += cardinal
         self.direction = tools.Direction(Cardinals.to_degrees(self.next.grid - self.grid))
-        self.surface = self.__images[self.walls]
+        self.surface = self.__images[self.key]
         return
 
     def get_surface(self):

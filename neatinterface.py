@@ -37,6 +37,12 @@ class NeatCore(lib.Core):
         self.walls = None
         return
 
+    def new_game(self):
+        super().new_game()
+        for tile in self.env.track.track_tiles:
+            tile.neighbor_walls = carvision.get_neighbor_walls(tile)
+        return
+
     def new_cars(self):
         return [SmartCar(self.env.track.start_tile, genome) for genome in self.population.genomes]
 
