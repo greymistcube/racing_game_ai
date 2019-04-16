@@ -92,7 +92,7 @@ class Core:
 
     def get_debug_surface(self):
         texts = [
-            " Speed: {0: .2f}".format(self.env.cars[0].speed),
+            " Speed: {0: .1f}".format(self.env.cars[0].speed),
         ]
 
         return self.text_renderer.texts_to_surface(texts)

@@ -41,7 +41,8 @@ class Car():
         # requires a new instance since car's direction will change
         self.direction = Direction(self.tile.direction.degrees)
         self.velocity = self.direction.vector * self.speed
-        self.laps = 0
+        # number of laps starts counting after passing the start line
+        self.laps = -1
         self.score = 0
         self.timer = const.TIMER
         self.alive = True
@@ -58,6 +59,8 @@ class Car():
             self.speed -= const.ACC_RATE / 2
         elif self.speed < 0:
             self.speed += const.ACC_RATE / 2
+        # fixing rounding error
+        self.speed = round(self.speed, 1)
 
     # lazy implementation of collision
     # it's easier to crash the car if it doesn't land on
@@ -87,7 +90,7 @@ class Car():
         if self.tile.grid + grid_offset == self.tile.next.grid:
             self.score += const.TILE_SCORE
             self.tile = self.tile.next
-            if self.tile.grid == self.start_tile.grid:
+            if self.tile.grid == self.start_tile.next.grid:
                 self.laps += 1
                 self.score += const.LAP_BONUS
                 if self.laps >= const.LAPS_PER_GAME:
