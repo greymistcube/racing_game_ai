@@ -54,6 +54,10 @@ class Car():
         self.check_crash()
         if self.alive:
             self.update_tile()
+        if self.speed > 0:
+            self.speed -= const.ACC_RATE / 2
+        elif self.speed < 0:
+            self.speed += const.ACC_RATE / 2
 
     # lazy implementation of collision
     # it's easier to crash the car if it doesn't land on

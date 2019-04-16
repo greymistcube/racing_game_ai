@@ -16,11 +16,13 @@ class Events:
         return
 
     def update(self):
+        self.info = False
         # check for quit event
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_i:
+                self.info = True
         # check for pressed keys and update variables accordingly
         pressed_keys = pygame.key.get_pressed()
         self.acc = pressed_keys[pygame.K_UP]
@@ -28,7 +30,6 @@ class Events:
         self.left = pressed_keys[pygame.K_LEFT]
         self.right = pressed_keys[pygame.K_RIGHT]
         self.stop = pressed_keys[pygame.K_SPACE]
-        self.info = pressed_keys[pygame.K_i]
         for i, pressed in enumerate(pressed_keys[pygame.K_0:pygame.K_0 + 10]):
             if pressed:
                 self.multiplier = i

@@ -19,5 +19,3 @@ TIMER = 100
 # predefined color tuples
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-SKY_BLUE = (127, 191, 255)
-GREEN = (0, 127, 0)
