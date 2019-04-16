@@ -75,7 +75,8 @@ class Core:
 
     def get_surface(self):
         surface = self.env.get_surface()
-        surface.blit(self.get_info_surface(), (0, 0))
+        if settings.info:
+            surface.blit(self.get_info_surface(), (0, 0))
         return surface
 
     def get_info_surface(self):

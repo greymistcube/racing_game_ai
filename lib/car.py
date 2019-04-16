@@ -102,6 +102,7 @@ class Car():
             self.speed += const.ACC_RATE
         if events.dec and self.speed > -const.SPD_LIMIT:
             self.speed -= const.ACC_RATE
+        # temporary feature for debugging
         if events.stop:
             self.speed = 0
         if events.left:

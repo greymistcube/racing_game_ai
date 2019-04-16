@@ -59,6 +59,9 @@ def get_distances(car, walls):
 
     # rotation transformation when aligning vec to (1, 0)
     # still haven't figured out why this should be positive
+    # most likely because y axis is flipped upside down
+    # direction class and rotation method should be overhauled
+    # to keep better track of what is going on
     rotate = lambda v: np.matmul(tools.R(car.direction.degrees), v)
     walls = np.apply_along_axis(rotate, 2, walls)
     x_intersects = []
