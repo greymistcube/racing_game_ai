@@ -13,7 +13,8 @@ To install the required packages, run the following commands.
 pip install numpy
 pip install pygame
 ```
-Versions `1.16.2` and `1.9.4` were used respectively during its devlopment.
+Versions `1.16.2` and `1.9.4` were used respectively during the devlopment
+of the game.
 
 ## Usage
 
