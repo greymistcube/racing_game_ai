@@ -10,6 +10,8 @@ class Events:
         self.dec = False
         self.left = False
         self.right = False
+        self.info = False
+        # temporary debugging feature
         self.stop = False
         return
 
@@ -26,6 +28,7 @@ class Events:
         self.left = pressed_keys[pygame.K_LEFT]
         self.right = pressed_keys[pygame.K_RIGHT]
         self.stop = pressed_keys[pygame.K_SPACE]
+        self.info = pressed_keys[pygame.K_i]
         for i, pressed in enumerate(pressed_keys[pygame.K_0:pygame.K_0 + 10]):
             if pressed:
                 self.multiplier = i

@@ -18,6 +18,7 @@ class Environment:
         self.start_grid = self.track.get_start_grid()
         self.cars = []
         self.num_alive = 0
+        self.background = self.set_background()
 
     def add_cars(self, cars):
         self.cars += cars
@@ -35,8 +36,7 @@ class Environment:
     def game_over(self):
         return self.num_alive == 0
 
-    # should have a template surface to only add cars
-    def get_surface(self):
+    def set_background(self):
         surface = pygame.Surface(const.RESOLUTION, pygame.SRCALPHA)
         for i in range(const.HEIGHT // const.TILE_SIZE):
             for j in range(const.WIDTH // const.TILE_SIZE):
@@ -46,6 +46,12 @@ class Environment:
                 )
 
         surface.blit(self.track.get_surface(), (0, 0))
+        return surface
+
+    # should have a template surface to only add cars
+    def get_surface(self):
+        surface = pygame.Surface(const.RESOLUTION, pygame.SRCALPHA)
+        surface.blit(self.background, (0, 0))
         for car in self.cars:
             surface.blit(car.get_surface(), car.get_rect())
         return surface

@@ -11,6 +11,7 @@ class Settings:
 
     # this should be called at least once with args in main.py
     def __init__(self, args=None):
+        self.info = True
         if args is not None:
             self.tickrate = TICKRATE
             self.num_cars = args.n
@@ -18,4 +19,6 @@ class Settings:
 
     def update(self, events):
         self.tickrate = TICKRATE * events.multiplier
+        if events.info:
+            self.info = not self.info
         return
