@@ -43,7 +43,7 @@ class NeatCore(lib.Core):
     def update(self):
         self.events.update()
         settings.update(self.events)
-        # only cycle through balls alive in the environment for optimization
+        # only cycle through cars alive in the environment for optimization
         for car in self.env.cars:
             car.think(self.get_x(car))
         self.env.update()

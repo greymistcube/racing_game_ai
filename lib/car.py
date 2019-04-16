@@ -63,8 +63,8 @@ class Car():
     # this only makes corner turning slightly more tighter
     def check_crash(self):
         grid_offset = _grid_offset(self.rel_x, self.rel_y)
-        # if self.timer < 0:
-        #     self.alive = False
+        if self.timer < 0:
+            self.alive = False
         if self.tile.grid + grid_offset not in [
                 self.tile.prev.grid,
                 self.tile.grid,
@@ -102,6 +102,8 @@ class Car():
             self.speed += const.ACC_RATE
         if events.dec and self.speed > -const.SPD_LIMIT:
             self.speed -= const.ACC_RATE
+        if events.stop:
+            self.speed = 0
         if events.left:
             self.direction.rotate(const.TURN_SPD)
         if events.right:

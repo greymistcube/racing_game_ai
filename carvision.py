@@ -17,9 +17,6 @@ def get_car_vision(car):
     # convert to scaled pixel coordinates
     walls = np.array([[wall[0].scaled, wall[1].scaled] for wall in walls])
 
-    # get four relavent directions
-    directions = get_directions(car)
-
     # get distances in four directions
     distances = get_distances(car, walls)
 
@@ -28,8 +25,8 @@ def get_car_vision(car):
 def get_neighbor_walls(car):
     tile = car.tile
 
-    grid_delta_prev = car.tile.prev.grid - car.tile.grid
-    grid_delta_next = car.tile.next.grid - car.tile.grid
+    grid_delta_prev = tile.prev.grid - tile.grid
+    grid_delta_next = tile.next.grid - tile.grid
 
     cardinals = "nesw"
     walls = []
@@ -51,11 +48,7 @@ def get_neighbor_walls(car):
                     grid_walls[cardinal][1] + grid_delta_next,
                 )
             )
-
     return walls
-
-def get_directions(car):
-    return [tools.Direction(car.direction.degrees + (90 * i)) for i in range(4)]
 
 def get_distances(car, walls):
     pt = np.array([car.rel_x, car.rel_y])
@@ -65,9 +58,9 @@ def get_distances(car, walls):
     walls = np.apply_along_axis(center, 2, walls)
 
     # rotation transformation when aligning vec to (1, 0)
-    rotate = lambda v: np.matmul(tools.R(-car.direction.degrees), v)
+    # still haven't figured out why this should be positive
+    rotate = lambda v: np.matmul(tools.R(car.direction.degrees), v)
     walls = np.apply_along_axis(rotate, 2, walls)
-
     x_intersects = []
     y_intersects = []
     # now we only need to check sign differences in x or y coordinates
@@ -81,29 +74,29 @@ def get_distances(car, walls):
         if wall[0][1] * wall[1][1] < 0:
             x_intersects.append(wall)
 
-    # self note:
+    # two point line equation for reference:
     # y - y1 = ((y2 - y1) / (x2 - x1)) * (x - x1)
     # division by zero should have been avoided when checking signs
     # compute x and y intercepts
-    # 1 and -1 are added in as limits and for normalization
+    # +TILE_SIZE and -TILE_SIZE are added in as limits and for normalization
     x_intercepts = [-const.TILE_SIZE, const.TILE_SIZE]
     y_intercepts = [-const.TILE_SIZE, const.TILE_SIZE]
     for wall in x_intersects:
         x_intercepts.append(
-            wall[0][1] * (wall[1][0] - wall[0][0]) / (wall[1][1] - wall[0][1]) \
+            (-wall[0][1]) * (wall[1][0] - wall[0][0]) / (wall[1][1] - wall[0][1]) \
             + wall[0][0]
         )
     for wall in y_intersects:
         y_intercepts.append(
             ((wall[1][1] - wall[0][1]) / (wall[1][0] - wall[0][0])) \
-                * (-wall[0][0]) + wall[0][1]
+            * (-wall[0][0]) + wall[0][1]
         )
     front = min([x for x in x_intercepts if x > 0]) / 20
     back = min([-x for x in x_intercepts if x < 0]) / 20
     # left and right might be swapped
     # shouldn't really matter for the end result
-    left = min([y for y in y_intercepts if y > 0]) / 20
-    right = min([-y for y in y_intercepts if y < 0]) / 20
+    left = min([-y for y in y_intercepts if y < 0]) / 20
+    right = min([y for y in y_intercepts if y > 0]) / 20
     return [front, back, left, right]
 
 def get_singed_degrees_delta(car):
