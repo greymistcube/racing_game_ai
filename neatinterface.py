@@ -3,12 +3,12 @@ import random
 import numpy as np
 import pygame
 
-import neat
 import lib
-
 import lib.constants as const
 from lib.settings import Settings
-from lib.grid import Directions
+
+import neat
+import carvision
 
 pygame.init()
 settings = Settings()
@@ -23,7 +23,7 @@ def load_image(file):
 # and adding extensions
 class NeatCore(lib.Core):
     # game specific variables
-    _num_input = 4
+    _num_input = 6
     _num_output = 4
 
     # overriden methods
@@ -34,6 +34,7 @@ class NeatCore(lib.Core):
             self._num_output,
             pop_size=settings.num_cars
         )
+        self.walls = None
         return
 
     def new_cars(self):
@@ -42,7 +43,7 @@ class NeatCore(lib.Core):
     def update(self):
         self.events.update()
         settings.update(self.events)
-        # only cycle through balls alive in the environment for optimization
+        # only cycle through cars alive in the environment for optimization
         for car in self.env.cars:
             car.think(self.get_x(car))
         self.env.update()
@@ -84,7 +85,17 @@ class NeatCore(lib.Core):
     # extended methods
     def get_x(self, car):
         if car.alive:
-            degrees_diff = (car.degrees - Directions.to_degrees(car.tile.direction)) % 360
+            degrees_delta = carvision.get_singed_degrees_delta(car)
+            distances = carvision.get_car_vision(car)
+            return [
+                car.speed,
+                degrees_delta / 180,
+                distances[0],
+                distances[1],
+                distances[2],
+                distances[3],
+            ]
+            """
             return [
                 # car.rel_x / const.TILE_SIZE,
                 # car.rel_y / const.TILE_SIZE,
@@ -100,6 +111,7 @@ class NeatCore(lib.Core):
                 # np.dot(car.velocity, car.tile.direction.vec),
                 (degrees_diff / 180) if degrees_diff < 180 else (degrees_diff - 360) / 180,
             ]
+            """
         # this part shouldn't really happen since
         # only living cars are called to think
         else:
@@ -120,7 +132,7 @@ class SmartCar(lib.car.Car):
         self.genome = genome
         self.surface = self._images[self.get_color(genome)]
         # randomize starting angle
-        self.degrees += (random.randint(-10, 10) * 4.5) % 360
+        self.direction.rotate(random.randint(-10, 10) * const.TURN_SPD)
 
     def get_color(self, genome):
         return self._genome_to_color[genome.genome_type]
@@ -132,9 +144,8 @@ class SmartCar(lib.car.Car):
         if pred[1] and self.speed > -const.SPD_LIMIT:
             self.speed -= const.ACC_RATE
         if pred[2]:
-            self.degrees += const.TURN_SPD
+            self.direction.rotate(const.TURN_SPD)
         if pred[3]:
-            self.degrees -= const.TURN_SPD
-        self.degrees = self.degrees % 360
-        self.velocity = self.get_velocity()
+            self.direction.rotate(-const.TURN_SPD)
+        self.velocity = self.direction.vector * self.speed
         return

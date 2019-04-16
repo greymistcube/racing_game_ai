@@ -3,8 +3,9 @@ import random
 import pygame
 
 from lib import constants as const
-from lib.grid import Grid, Directions
+from lib.grid import Grid, Cardinals
 from lib import trackgenerator
+import lib.tools as tools
 
 pygame.init()
 
@@ -41,7 +42,7 @@ class Track():
         surface.blit(
             pygame.transform.rotate(
                 self.__start_line_image,
-                Directions.to_degrees(self.start_tile.direction)
+                self.start_tile.direction.degrees
             ),
             self.start_tile.rect
         )
@@ -71,38 +72,31 @@ class TrackTile():
         self.prev = None
         self.next = None
         self.direction = None
-        # self.walls = Walls()
+        self.walls = ""
         self.surface = self.__image
         return
 
     def set_track_properties(self):
         # cardinal direction naming order: n, s, e, w
-        key = ""
+        cardinals = "nsew"
+        hole = ""
         if self.grid.N == self.prev.grid or self.grid.N == self.next.grid:
-            # self.walls.N = False
-            key += "n"
+            hole += "n"
         if self.grid.S == self.prev.grid or self.grid.S == self.next.grid:
-            # self.walls.S = False
-            key += "s"
+            hole += "s"
         if self.grid.E == self.prev.grid or self.grid.E == self.next.grid:
-            # self.walls.E = False
-            key += "e"
+            hole += "e"
         if self.grid.W == self.prev.grid or self.grid.W == self.next.grid:
-            # self.walls.W = False
-            key += "w"
-        self.direction = self.next.grid - self.grid
-        self.surface = self.__images[key]
+            hole += "w"
+        for cardinal in cardinals:
+            if cardinal not in hole:
+                self.walls += cardinal
+        self.direction = tools.Direction(Cardinals.to_degrees(self.next.grid - self.grid))
+        self.surface = self.__images[self.walls]
         return
 
     def get_surface(self):
         return self.surface
-
-class Walls:
-    def __init__(self):
-        self.N = True
-        self.S = True
-        self.E = True
-        self.W = True
 
 # this part could obviously be streamlined for smaller code footprint
 # not sure how to go about it without sacrificing code readability

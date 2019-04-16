@@ -1,21 +1,16 @@
 import random
 
 import pygame
-import numpy as np
 
 import lib.constants as const
-from lib.grid import Grid, Directions
+from lib.tools import Direction
+from lib.grid import Grid
 
 pygame.init()
 
 def load_image(file):
     image = pygame.image.load(file)
     return image
-
-_R = lambda theta: np.array([
-    [np.cos(theta), -np.sin(theta)],
-    [np.sin(theta), np.cos(theta)],
-])
 
 _axis_offset = lambda val: 1 if val > const.TILE_SIZE else -1 if val < 0 else 0
 _grid_offset = lambda x, y: Grid(_axis_offset(x), _axis_offset(y))
@@ -38,11 +33,14 @@ class Car():
             self.surface = self._images[color]
         self.start_tile = tile
         self.tile = tile
+        # initially starts at the middle of the starting tile
         self.rel_x = const.TILE_SIZE // 2
         self.rel_y = const.TILE_SIZE // 2
+
         self.speed = 0
-        self.velocity = (0, 0)
-        self.degrees = Directions.to_degrees(self.tile.direction)
+        # requires a new instance since car's direction will change
+        self.direction = Direction(self.tile.direction.degrees)
+        self.velocity = self.direction.vector * self.speed
         self.laps = 0
         self.score = 0
         self.timer = const.TIMER
@@ -80,7 +78,7 @@ class Car():
         y_axis_offset = _axis_offset(self.rel_y)
         grid_offset = _grid_offset(self.rel_x, self.rel_y)
         if grid_offset != Grid(0, 0):
-            # self.score += self.timer // 10
+            self.score += self.timer // 10
             self.timer = const.TIMER
         if self.tile.grid + grid_offset == self.tile.next.grid:
             self.score += const.TILE_SCORE
@@ -104,18 +102,16 @@ class Car():
             self.speed += const.ACC_RATE
         if events.dec and self.speed > -const.SPD_LIMIT:
             self.speed -= const.ACC_RATE
+        if events.stop:
+            self.speed = 0
         if events.left:
-            self.degrees += const.TURN_SPD
+            self.direction.rotate(const.TURN_SPD)
         if events.right:
-            self.degrees -= const.TURN_SPD
-        self.degrees = self.degrees % 360
-        self.velocity = self.get_velocity()
-
-    def get_velocity(self):
-        return np.matmul(_R(np.radians(self.degrees)), (0, 1)) * self.speed
+            self.direction.rotate(-const.TURN_SPD)
+        self.velocity = self.direction.vector * self.speed
 
     def get_surface(self):
-        return pygame.transform.rotate(self.surface, self.degrees)
+        return pygame.transform.rotate(self.surface, self.direction.degrees)
 
     def get_rect(self):
         self.rect.center = (
