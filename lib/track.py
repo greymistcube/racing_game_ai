@@ -1,11 +1,11 @@
 import random
 
-import numpy as np
 import pygame
 
-import lib
 from lib import constants as const
-from lib.grid import Grid, Directions
+from lib.grid import Grid, Cardinals
+from lib import trackgenerator
+import lib.tools as tools
 
 pygame.init()
 
@@ -13,102 +13,41 @@ def load_image(file):
     image = pygame.image.load(file)
     return image
 
-# temporary method for creating an array representation of a track
-def create_track_arr():
-    temp = np.zeros((10, 14), dtype='int')
-    temp[:, 0] = 1
-    temp[:, -1] = 1
-    temp[0, :] = 1
-    temp[-1, :] = 1
-    temp[0, 0] = 2
-    result = np.zeros((12, 16), dtype='int')
-    result[1:-1, 1:-1] += temp
-    return result
-
-def arr_to_grids(arr):
-    result = []
-    # find the most upper left coordinate with value not equal to zero
-    # and set it as a temporary starting point
-    for i, _ in enumerate(arr):
-        for j, _ in enumerate(arr):
-            if arr[i][j]:
-                result.append(Grid(j, i))
-                break
-        if result:
-            break
-
-    start = result[0]
-    while True:
-        current = result[-1]
-
-        # get four adjacent grids to check
-        adjacents = current.adjacents()
-
-        # if any of the adjacent grid is the same as the starting grid
-        # and the length of the result is sufficient, we've completed the loop
-        if (
-            any([adjacent == start for adjacent in adjacents]) and
-            len(result) > 2
-        ):
-            break
-
-        for adjacent in adjacents:
-            if arr[adjacent.y][adjacent.x] and adjacent not in result:
-                result.append(adjacent)
-                break
-
-    return result
-
-def grids_to_tiles(grids):
-    result = []
-
-    for grid in grids:
-        if result:
-            previous_tile = result[-1]
-            current_tile = TrackTile(grid)
-            previous_tile.next = current_tile
-            current_tile.prev = previous_tile
-            result.append(current_tile)
-        else:
-            result.append(TrackTile(grid))
-
-    # connect the end points to complete the loop
-    result[-1].next = result[0]
-    result[0].prev = result[-1]
-
-    return result
-
-# this process is pretty mess at the moment
-# might need some cleanup
-def create_track():
-    arr = create_track_arr()
-    grids = arr_to_grids(arr)
-    tiles = grids_to_tiles(grids)
-    for tile in tiles:
-        tile.set_track_properties()
-    return tiles
-
 # track object is basically a wrapper for a doubly linked list
+# with a reference only to its starting node
 # the object itself does not handle the creation process
 class Track():
-    __image = load_image("./rsc/img/track_tile.png")
+    __start_line_image = load_image("./rsc/img/start_line.png")
 
     def __init__(self):
-        self.track_tiles = create_track()
+        self.track_tiles = create_track(
+            const.WIDTH // const.TILE_SIZE,
+            const.HEIGHT // const.TILE_SIZE
+        )
         # set starting tile. this should be randomized at some point
         self.start_tile = self.track_tiles[0]
         for _ in range(random.randrange(len(self.track_tiles))):
             self.start_tile = self.start_tile.next
-        self.surface = self.create_surface()
+        self.surface = self.set_surface()
 
-    def create_surface(self):
+    def get_start_grid(self):
+        return self.start_tile.grid
+
+    # as a track is static throught a game, create a surface
+    # during initialization
+    def set_surface(self):
         surface = pygame.Surface(const.RESOLUTION, pygame.SRCALPHA)
         for track_tile in self.track_tiles:
             surface.blit(track_tile.get_surface(), track_tile.rect)
-        return surface
+        surface.blit(
+            pygame.transform.rotate(
+                self.__start_line_image,
+                self.start_tile.direction.degrees
+            ),
+            self.start_tile.rect
+        )
 
-    def get_start_grid(self):
-        return (self.start_tile.grid)
+        return surface
 
     def get_surface(self):
         return self.surface
@@ -132,34 +71,93 @@ class TrackTile():
         self.rect.center = (self.x, self.y)
         self.prev = None
         self.next = None
-        self.walls = Walls()
+        self.direction = None
+        self.walls = ""
         self.surface = self.__image
         return
 
     def set_track_properties(self):
         # cardinal direction naming order: n, s, e, w
-        key = ""
+        cardinals = "nsew"
+        hole = ""
         if self.grid.N == self.prev.grid or self.grid.N == self.next.grid:
-            self.walls.N = False
-            key += "n"
+            hole += "n"
         if self.grid.S == self.prev.grid or self.grid.S == self.next.grid:
-            self.walls.S = False
-            key += "s"
+            hole += "s"
         if self.grid.E == self.prev.grid or self.grid.E == self.next.grid:
-            self.walls.E = False
-            key += "e"
+            hole += "e"
         if self.grid.W == self.prev.grid or self.grid.W == self.next.grid:
-            self.walls.W = False
-            key += "w"
-        self.surface = self.__images[key]
+            hole += "w"
+        for cardinal in cardinals:
+            if cardinal not in hole:
+                self.walls += cardinal
+        self.direction = tools.Direction(Cardinals.to_degrees(self.next.grid - self.grid))
+        self.surface = self.__images[self.walls]
         return
 
     def get_surface(self):
         return self.surface
 
-class Walls:
-    def __init__(self):
-        self.N = True
-        self.S = True
-        self.E = True
-        self.W = True
+# this part could obviously be streamlined for smaller code footprint
+# not sure how to go about it without sacrificing code readability
+# since this is called once every game, this wouldn't be the main bottleneck
+# for the performance
+def create_track(width, height):
+    # when dealing with arrays x and y indices are swapped
+    arr = trackgenerator.create_track_arr(height, width)
+    grids = arr_to_grids(arr)
+    tiles = grids_to_tiles(grids)
+    for tile in tiles:
+        tile.set_track_properties()
+    return tiles
+
+def arr_to_grids(arr):
+    result = []
+    # find the most upper left coordinate with value not equal to zero
+    # and set it as a temporary starting point
+    for i, _ in enumerate(arr):
+        for j, _ in enumerate(arr):
+            if arr[i][j] == 1:
+                result.append(Grid(j, i))
+                break
+        if result:
+            break
+
+    start = result[0]
+    while True:
+        current = result[-1]
+
+        # get four adjacent grids to check
+        adjacents = current.adjacents()
+
+        # if any of the adjacent grid is the same as the starting grid
+        # and the length of the result is sufficient, we've completed the loop
+        if any([adjacent == start for adjacent in adjacents]) \
+            and len(result) > 2:
+            break
+
+        for adjacent in adjacents:
+            if arr[adjacent.y][adjacent.x] == 1 and adjacent not in result:
+                result.append(adjacent)
+                break
+
+    return result
+
+def grids_to_tiles(grids):
+    result = []
+
+    for grid in grids:
+        if result:
+            previous_tile = result[-1]
+            current_tile = TrackTile(grid)
+            previous_tile.next = current_tile
+            current_tile.prev = previous_tile
+            result.append(current_tile)
+        else:
+            result.append(TrackTile(grid))
+
+    # connect the end points to complete the loop
+    result[-1].next = result[0]
+    result[0].prev = result[-1]
+
+    return result
