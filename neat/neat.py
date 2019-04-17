@@ -58,7 +58,7 @@ class Population:
 
         # logging
         print("generation: {}".format(self.generation))
-        print("best score: {}".format(self.genomes[0].score))
+        print("best score: {:.4f}".format(self.genomes[0].score))
         print("best fitness: {:.4f}".format(self.genomes[0].fitness))
         print("best type: {}".format(self.genomes[0].genome_type))
         print("best shape: {}, {}, {}".format(
