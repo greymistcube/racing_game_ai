@@ -1,11 +1,9 @@
 import pygame
-import numpy as np
 import lib.constants as const
 from lib.settings import Settings
 from lib.events import Events
 from lib.environment import Environment
 from lib.car import Car
-import carvision
 
 pygame.init()
 settings = Settings()
@@ -84,10 +82,13 @@ class Core:
 
     def get_surface(self):
         surface = self.env.get_surface()
+        info_surface = self.get_info_surface()
+        debug_surface = self.get_debug_surface()
+        debug_y_offset = info_surface.get_height()
         if settings.info:
-            surface.blit(self.get_info_surface(), (0, 0))
+            surface.blit(info_surface, (0, 0))
         if settings.debug:
-            surface.blit(self.get_debug_surface(), (0, 80))
+            surface.blit(debug_surface, (0, debug_y_offset))
         return surface
 
     def get_info_surface(self):
