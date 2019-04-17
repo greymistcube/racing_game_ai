@@ -107,14 +107,11 @@ class Car():
     def handle_events(self, events):
         if events.acc and self.speed < const.SPD_LIMIT:
             self.speed += const.ACC_RATE
-        if events.dec and self.speed > -const.SPD_LIMIT:
+        elif events.dec and self.speed > -const.SPD_LIMIT:
             self.speed -= const.ACC_RATE
-        # temporary feature for debugging
-        if events.stop:
-            self.speed = 0
         if events.left:
             self.direction.rotate(const.TURN_SPD)
-        if events.right:
+        elif events.right:
             self.direction.rotate(-const.TURN_SPD)
         self.velocity = self.direction.vector * self.speed
 
