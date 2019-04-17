@@ -37,6 +37,7 @@ class TextRenderer:
 
 class Core:
     def __init__(self):
+        self.clock = pygame.time.Clock()
         self.text_renderer = TextRenderer()
         self.game_count = 0
         self.events = Events()
@@ -58,6 +59,7 @@ class Core:
         return [Car(self.env.track.start_tile) for _ in range(settings.num_cars)]
 
     def update(self):
+        self.clock.tick(settings.tickrate)
         self.events.update()
         settings.update(self.events)
         for car in self.cars:
@@ -100,6 +102,7 @@ class Core:
     def get_debug_surface(self):
         texts = [
             " Speed: {0: .1f}".format(self.env.cars[0].speed),
+            " FPS: {}".format(1000 // self.clock.get_time()),
         ]
 
         return self.text_renderer.texts_to_surface(texts)

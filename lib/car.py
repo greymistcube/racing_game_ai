@@ -57,10 +57,6 @@ class Car():
         self.check_crash()
         if self.alive:
             self.update_tile()
-        if self.speed > 0:
-            self.speed -= const.ACC_RATE / 2
-        elif self.speed < 0:
-            self.speed += const.ACC_RATE / 2
         # fixing rounding error
         self.speed = round(self.speed, 1)
 
@@ -109,6 +105,10 @@ class Car():
             self.speed += const.ACC_RATE
         elif events.dec and self.speed > -const.SPD_LIMIT:
             self.speed -= const.ACC_RATE
+        elif self.speed > 0:
+            self.speed -= const.ACC_RATE / 2
+        elif self.speed < 0:
+            self.speed += const.ACC_RATE / 2
         if events.left:
             self.direction.rotate(const.TURN_SPD)
         elif events.right:

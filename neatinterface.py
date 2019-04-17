@@ -47,6 +47,7 @@ class NeatCore(lib.Core):
         return [SmartCar(self.env.track.start_tile, genome) for genome in self.population.genomes]
 
     def update(self):
+        self.clock.tick(settings.tickrate)
         self.events.update()
         settings.update(self.events)
         # only cycle through cars alive in the environment for optimization
@@ -87,7 +88,7 @@ class NeatCore(lib.Core):
 
         texts = [
             " Game: {}".format(self.game_count),
-            " Score: {}".format(self.best_score),
+            " Top Score: {}".format(self.best_score),
             " Alive: {}".format(self.env.num_alive),
             " (Blue) Survived: {}".format(num_survived),
             " (Green) Mutated: {}".format(num_mutated),
