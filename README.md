@@ -4,6 +4,8 @@
 
 This is a continuation of my previous project
 [Flappy Bird Clone with NEAT.](https://github.com/greymistcube/flappy_bird_ai)
+More information about this project can be found
+[here.](https://greymistcube.github.io/racing_game_ai/)
 
 ## Dependencies
 
