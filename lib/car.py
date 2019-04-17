@@ -75,8 +75,6 @@ class Car():
         return
 
     def update_tile(self):
-        x_axis_offset = _axis_offset(self.rel_x)
-        y_axis_offset = _axis_offset(self.rel_y)
         grid_offset = _grid_offset(self.rel_x, self.rel_y)
         if self.tile.grid + grid_offset == self.tile.next.grid:
             self.score += const.TILE_SCORE
@@ -89,8 +87,11 @@ class Car():
         elif self.tile.grid + grid_offset == self.tile.prev.grid:
             self.score -= const.TILE_SCORE
             self.tile = self.tile.prev
-        self.rel_x += const.TILE_SIZE * (x_axis_offset * (-1))
-        self.rel_y += const.TILE_SIZE * (y_axis_offset * (-1))
+            if self.tile.grid == self.start_tile.grid:
+                self.laps -= 1
+                self.score -= const.LAP_BONUS
+        self.rel_x += const.TILE_SIZE * (grid_offset.x * (-1))
+        self.rel_y += const.TILE_SIZE * (grid_offset.y * (-1))
         return
 
     def handle_events(self, events):

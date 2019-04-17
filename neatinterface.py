@@ -34,11 +34,13 @@ class NeatCore(lib.Core):
             self._num_output,
             pop_size=settings.num_cars
         )
+        self.best_score = 0
         self.walls = None
         return
 
     def new_game(self):
         super().new_game()
+        self.best_score = 0
         for tile in self.env.track.track_tiles:
             tile.scaled_neighbor_walls = carvision.get_scaled_neighbor_walls(tile)
         return
@@ -62,7 +64,7 @@ class NeatCore(lib.Core):
             # if the direction of the car is closer to the direction of
             # the tile grid, give reward
             scores = [
-                car.score + car.time_bonus \
+                car.score + car.time_bonus // 2 \
                 + (180 - abs(carvision.get_singed_degrees_delta(car))) * 10 \
                 for car in self.cars
             ]
@@ -120,23 +122,6 @@ class NeatCore(lib.Core):
                 distances[2],
                 distances[3],
             ]
-            """
-            return [
-                # car.rel_x / const.TILE_SIZE,
-                # car.rel_y / const.TILE_SIZE,
-                # const.TILE_SIZE - (car.rel_x / const.TILE_SIZE),
-                # const.TILE_SIZE - (car.rel_y / const.TILE_SIZE),
-                (car.rel_x - const.TILE_SIZE // 2) / const.TILE_SIZE,
-                (car.rel_y - const.TILE_SIZE // 2) / const.TILE_SIZE,
-                car.speed,
-                # car.velocity[0],
-                # car.velocity[1],
-                # car.tile.direction.x,
-                # car.tile.direction.y,
-                # np.dot(car.velocity, car.tile.direction.vec),
-                (degrees_diff / 180) if degrees_diff < 180 else (degrees_diff - 360) / 180,
-            ]
-            """
         # this part shouldn't really happen since
         # only living cars are called to think
         else:
