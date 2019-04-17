@@ -58,7 +58,7 @@ class Population:
 
         # logging
         print("generation: {}".format(self.generation))
-        print("best score: {}".format(self.genomes[0].score))
+        print("best score: {:.4f}".format(self.genomes[0].score))
         print("best fitness: {:.4f}".format(self.genomes[0].fitness))
         print("best type: {}".format(self.genomes[0].genome_type))
         print("best shape: {}, {}, {}".format(
@@ -66,6 +66,7 @@ class Population:
             self.genomes[0].h_dim,
             self.genomes[0].y_dim
         ))
+        print("best w1 {}".format(self.genomes[0].w1.round(2)))
         print("----------------")
 
         survived = evolver.get_survived(self.genomes, self.num_survive)
