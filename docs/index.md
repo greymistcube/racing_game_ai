@@ -122,6 +122,12 @@ the signs of of $x$ or $y$ coordinates. Evenmore, distances are now just
 $x$-intercept and $y$-intercept values.
 
 # Inside the AI's Mind
+
+As flappy bird was rather a simple game, it wasn't very insightful in how
+the AI was learning to beat the game. However, in this case, after running
+several trails, there were some particulars about the behaviors of the AI
+that were quite noticable.
+
 ## Learning One Feature at a Time
 
 ## Learning a Single Feature Too Well
