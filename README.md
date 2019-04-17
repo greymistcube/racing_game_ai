@@ -34,3 +34,4 @@ More help can be found with by using the `-h` option.
 Use <kbd>&uarr;</kbd>, <kbd>&darr;</kbd>, <kbd>&larr;</kbd>, and <kbd>&rarr;</kbd>
 keys to control the car. Number keys may be used to change the game speed.
 This is mainly used to speed up the training process for the AI.
+Use <kbd>I</kbd> to toggle the information overlay.

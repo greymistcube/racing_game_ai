@@ -13,18 +13,13 @@ grid_walls = {
 
 def get_car_vision(car):
     # get all the walls in its neighboring tiles
-    walls = get_neighbor_walls(car)
-    # convert to scaled pixel coordinates
-    walls = np.array([[wall[0].scaled, wall[1].scaled] for wall in walls])
-
+    walls = car.tile.scaled_neighbor_walls
     # get distances in four directions
     distances = get_distances(car, walls)
 
     return distances
 
-def get_neighbor_walls(car):
-    tile = car.tile
-
+def get_scaled_neighbor_walls(tile):
     grid_delta_prev = tile.prev.grid - tile.grid
     grid_delta_next = tile.next.grid - tile.grid
 
@@ -32,22 +27,25 @@ def get_neighbor_walls(car):
     walls = []
 
     for cardinal in cardinals:
-        if cardinal in tile.walls:
+        if cardinal in tile.key:
             walls.append(grid_walls[cardinal])
-        if cardinal in tile.prev.walls:
+        if cardinal in tile.prev.key:
             walls.append(
                 (
                     grid_walls[cardinal][0] + grid_delta_prev,
                     grid_walls[cardinal][1] + grid_delta_prev,
                 )
             )
-        if cardinal in tile.next.walls:
+        if cardinal in tile.next.key:
             walls.append(
                 (
                     grid_walls[cardinal][0] + grid_delta_next,
                     grid_walls[cardinal][1] + grid_delta_next,
                 )
             )
+    
+    # convert to scaled pixel coordinates and return it as a numpy array
+    walls = np.array([[wall[0].scaled, wall[1].scaled] for wall in walls])
     return walls
 
 def get_distances(car, walls):
@@ -59,6 +57,9 @@ def get_distances(car, walls):
 
     # rotation transformation when aligning vec to (1, 0)
     # still haven't figured out why this should be positive
+    # most likely because y axis is flipped upside down
+    # direction class and rotation method should be overhauled
+    # to keep better track of what is going on
     rotate = lambda v: np.matmul(tools.R(car.direction.degrees), v)
     walls = np.apply_along_axis(rotate, 2, walls)
     x_intersects = []
@@ -97,7 +98,12 @@ def get_distances(car, walls):
     # shouldn't really matter for the end result
     left = min([-y for y in y_intercepts if y < 0]) / 20
     right = min([y for y in y_intercepts if y > 0]) / 20
-    return [front, back, left, right]
+    return {
+        "front": front,
+        "back": back,
+        "left": left,
+        "right": right
+    }
 
 def get_singed_degrees_delta(car):
     delta = (car.direction.degrees - car.tile.direction.degrees) % 360

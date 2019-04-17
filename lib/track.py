@@ -14,7 +14,7 @@ def load_image(file):
     return image
 
 # track object is basically a wrapper for a doubly linked list
-# with a reference only to its starting node
+# with a reference to its starting node
 # the object itself does not handle the creation process
 class Track():
     __start_line_image = load_image("./rsc/img/start_line.png")
@@ -24,10 +24,9 @@ class Track():
             const.WIDTH // const.TILE_SIZE,
             const.HEIGHT // const.TILE_SIZE
         )
-        # set starting tile. this should be randomized at some point
-        self.start_tile = self.track_tiles[0]
-        for _ in range(random.randrange(len(self.track_tiles))):
-            self.start_tile = self.start_tile.next
+        # set starting tile
+        self.start_tile = random.choice(self.track_tiles)
+        self.start_tile.is_start_tile = True
         self.surface = self.set_surface()
 
     def get_start_grid(self):
@@ -72,8 +71,9 @@ class TrackTile():
         self.prev = None
         self.next = None
         self.direction = None
-        self.walls = ""
+        self.key = ""
         self.surface = self.__image
+        self.is_start_tile = False
         return
 
     def set_track_properties(self):
@@ -90,9 +90,9 @@ class TrackTile():
             hole += "w"
         for cardinal in cardinals:
             if cardinal not in hole:
-                self.walls += cardinal
+                self.key += cardinal
         self.direction = tools.Direction(Cardinals.to_degrees(self.next.grid - self.grid))
-        self.surface = self.__images[self.walls]
+        self.surface = self.__images[self.key]
         return
 
     def get_surface(self):

@@ -22,6 +22,9 @@ class Grid:
     def __repr__(self):
         return "({}, {})".format(self.x, self.y)
 
+    def __bool__(self):
+        return self.x != 0 or self.y != 0
+
     def adjacents(self):
         return [self + cardinal for cardinal in Cardinals()]
 
@@ -40,10 +43,6 @@ class Grid:
     @property
     def W(self):
         return self + Cardinals.W
-
-    @property
-    def vec(self):
-        return np.array([self.x, self.y])
 
     @property
     def scaled(self):
