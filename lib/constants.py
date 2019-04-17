@@ -15,6 +15,7 @@ ACC_RATE = 0.2
 SPD_LIMIT = 4.0
 TURN_SPD = 3
 TIMER = 100
+CRASHED_TIMER = 30
 
 # predefined color tuples
 WHITE = (255, 255, 255)

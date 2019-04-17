@@ -40,7 +40,7 @@ class NeatCore(lib.Core):
     def new_game(self):
         super().new_game()
         for tile in self.env.track.track_tiles:
-            tile.neighbor_walls = carvision.get_neighbor_walls(tile)
+            tile.scaled_neighbor_walls = carvision.get_scaled_neighbor_walls(tile)
         return
 
     def new_cars(self):
@@ -53,10 +53,18 @@ class NeatCore(lib.Core):
         for car in self.env.cars:
             car.think(self.get_x(car))
         self.env.update()
+        self.best_score = max(self.best_score, self.env.score)
 
     def game_over(self):
         if self.env.game_over():
-            scores = [car.score for car in self.cars]
+            # added incentive
+            # if the direction of the car is closer to the direction of
+            # the tile grid, give reward
+            scores = [
+                car.score \
+                + (180 - abs(carvision.get_singed_degrees_delta(car))) * 10 \
+                for car in self.cars
+            ]
             self.population.score_genomes(scores)
             self.population.evolve_population()
             return True
@@ -79,7 +87,7 @@ class NeatCore(lib.Core):
 
         texts = [
             " Game: {}".format(self.game_count),
-            " Score: {}".format(self.env.score),
+            " Score: {}".format(self.best_score),
             " Alive: {}".format(self.env.num_alive),
             " (Blue) Survived: {}".format(num_survived),
             " (Green) Mutated: {}".format(num_mutated),

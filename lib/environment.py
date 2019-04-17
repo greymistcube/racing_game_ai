@@ -17,6 +17,7 @@ class Environment:
         self.track = Track()
         self.start_grid = self.track.get_start_grid()
         self.cars = []
+        self.crashed_cars = []
         self.num_alive = 0
         self.background = self.set_background()
 
@@ -30,6 +31,7 @@ class Environment:
         self.score = max([car.score for car in self.cars])
         for car in self.cars[:]:
             if not car.alive:
+                self.crashed_cars.append(car)
                 self.cars.remove(car)
                 self.num_alive -= 1
 
@@ -54,4 +56,8 @@ class Environment:
         surface.blit(self.background, (0, 0))
         for car in self.cars:
             surface.blit(car.get_surface(), car.get_rect())
+        for car in self.crashed_cars[:]:
+            surface.blit(car.get_surface(), car.get_rect())
+            if car.crashed_timer < 0:
+                self.crashed_cars.remove(car)
         return surface
