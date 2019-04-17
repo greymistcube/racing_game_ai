@@ -98,7 +98,12 @@ def get_distances(car, walls):
     # shouldn't really matter for the end result
     left = min([-y for y in y_intercepts if y < 0]) / 20
     right = min([y for y in y_intercepts if y > 0]) / 20
-    return [front, back, left, right]
+    return {
+        "front": front,
+        "back": back,
+        "left": left,
+        "right": right
+    }
 
 def get_singed_degrees_delta(car):
     delta = (car.direction.degrees - car.tile.direction.degrees) % 360
