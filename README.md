@@ -2,10 +2,8 @@
 
 ![Game Screen](./docs/img/racing_game_ai_peek.gif)
 
-This is a continuation of my previous project
-[Flappy Bird Clone with NEAT.](https://github.com/greymistcube/flappy_bird_ai)
-More information about this project can be found
-[here.](https://greymistcube.github.io/racing_game_ai/)
+More information about this project can be found on
+[this github page.](https://greymistcube.github.io/racing_game_ai/)
 
 ## Dependencies
 
@@ -38,4 +36,4 @@ keys to control the car. Number keys <kbd>0</kbd>, ..., <kbd>9</kbd>
 may be used to change the game speed. This is mainly used to speed up
 the training process for the AI.
 Use <kbd>i</kbd> to toggle the information overlay and <kbd>d</kbd>
-to show the debug information.
+to show the debug screen.
