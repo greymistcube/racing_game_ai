@@ -43,7 +43,7 @@ def get_scaled_neighbor_walls(tile):
                     grid_walls[cardinal][1] + grid_delta_next,
                 )
             )
-    
+
     # convert to scaled pixel coordinates and return it as a numpy array
     walls = np.array([[wall[0].scaled, wall[1].scaled] for wall in walls])
     return walls

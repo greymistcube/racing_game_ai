@@ -18,3 +18,13 @@ This project was started with two main goals in mind:
  with as little change as possible.
  * Simulate an autonomous driving environment by limiting the kind of
  information that gets fed to the AI.
+
+# Very Nonlinear Nature of the Game
+
+# Chossing the Variables
+
+# Installing Sensors
+
+# Inside the AI's Mind
+
+# Other Discussions
