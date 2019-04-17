@@ -12,6 +12,9 @@ settings = Settings()
 
 class TextRenderer:
     _font = pygame.font.Font("./rsc/font/monogram.ttf", 16)
+    # simulate bold font
+    # better readability but uglier
+    # _font.set_bold(True)
     _line_height = _font.get_linesize()
 
     # render a single line of text
@@ -39,9 +42,12 @@ class Core:
         self.events = Events()
         self.cars = None
         self.env = None
+        # best score for the current game, not the entire history
+        self.best_score = 0
         return
 
     def new_game(self):
+        self.best_score = 0
         self.game_count += 1
         self.env = Environment()
         self.cars = self.new_cars()
@@ -57,6 +63,7 @@ class Core:
         for car in self.cars:
             car.handle_events(self.events)
         self.env.update()
+        self.best_score = max(self.best_score, self.env.score)
         """
         degrees_delta = carvision.get_singed_degrees_delta(self.cars[0])
         distances = carvision.get_car_vision(self.cars[0])
@@ -84,7 +91,7 @@ class Core:
     def get_info_surface(self):
         texts = [
             " Game: {}".format(self.game_count),
-            " Score: {}".format(self.env.score),
+            " Score: {}".format(self.best_score),
             " Alive: {}".format(self.env.num_alive)
         ]
 

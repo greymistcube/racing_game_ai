@@ -23,6 +23,7 @@ class Car():
         "green": load_image("./rsc/img/green_car.png"),
         "yellow": load_image("./rsc/img/yellow_car.png"),
         "red": load_image("./rsc/img/red_car.png"),
+        "crashed": load_image("./rsc/img/crashed_car.png")
     }
 
     def __init__(self, tile, color=None):
@@ -46,6 +47,7 @@ class Car():
         self.score = 0
         self.timer = const.TIMER
         self.alive = True
+        self.crashed_timer = const.CRASHED_TIMER
         return
 
     def update(self):
@@ -119,7 +121,11 @@ class Car():
         self.velocity = self.direction.vector * self.speed
 
     def get_surface(self):
-        return pygame.transform.rotate(self.surface, self.direction.degrees)
+        if self.alive:
+            return pygame.transform.rotate(self.surface, self.direction.degrees)
+        else:
+            self.crashed_timer -= 1
+            return pygame.transform.rotate(self._images["crashed"], self.direction.degrees)
 
     def get_rect(self):
         self.rect.center = (
