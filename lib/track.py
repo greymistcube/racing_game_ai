@@ -24,10 +24,9 @@ class Track():
             const.WIDTH // const.TILE_SIZE,
             const.HEIGHT // const.TILE_SIZE
         )
-        # set starting tile. this should be randomized at some point
-        self.start_tile = self.track_tiles[0]
-        for _ in range(random.randrange(len(self.track_tiles))):
-            self.start_tile = self.start_tile.next
+        # set starting tile
+        self.start_tile = random.choice(self.track_tiles)
+        self.start_tile.is_start_tile = True
         self.surface = self.set_surface()
 
     def get_start_grid(self):
@@ -74,6 +73,7 @@ class TrackTile():
         self.direction = None
         self.key = ""
         self.surface = self.__image
+        self.is_start_tile = False
         return
 
     def set_track_properties(self):
