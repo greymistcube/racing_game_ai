@@ -47,9 +47,26 @@ values of $x$ and $y$ the way we want, we must first figure out what the
 signs of $x$ and $y$ are and then act accordingly.
 
 # Chossing the Variables
-## Raw Input
+
+In my previous post, although I have mentioned that one must be wary of
+solving the problem for the AI, I'd say this is a good test case scenario
+with relations between input variables and output variables complex enough
+where we don't need to worry too much about such problem.
+
+## Raw Values for Input Variables
+
+If one were to be very naive about this, one can just feed in a bunch of
+"raw" values to the AI, such as $x$ and $y$ coordinates of the car, its
+velocity vector $v$ as a tuple, nearby walls considered as line segments
+represented by pairs of points, etc. I have tested this case and this does
+work with a single hidden layer network with enough hidden nodes.
+I had to force each genome to start with at least 8 hidden nodes,
+as it would take unfeasibly long amount of time without any rule modifications
+to the current AI, but there seems to be little to no reason why it shouldn't
+work when I let the genomes grow organically. More on this later.
 
 # Installing Sensors
+
 ## Solving the Distance Problem
 
 # Inside the AI's Mind
