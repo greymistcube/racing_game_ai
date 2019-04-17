@@ -23,6 +23,7 @@ class Car():
         "green": load_image("./rsc/img/green_car.png"),
         "yellow": load_image("./rsc/img/yellow_car.png"),
         "red": load_image("./rsc/img/red_car.png"),
+        "crashed": load_image("./rsc/img/crashed_car.png")
     }
 
     def __init__(self, tile, color=None):
@@ -41,10 +42,12 @@ class Car():
         # requires a new instance since car's direction will change
         self.direction = Direction(self.tile.direction.degrees)
         self.velocity = self.direction.vector * self.speed
-        self.laps = 0
+        # number of laps starts counting after passing the start line
+        self.laps = -1
         self.score = 0
         self.timer = const.TIMER
         self.alive = True
+        self.crashed_timer = const.CRASHED_TIMER
         return
 
     def update(self):
@@ -58,6 +61,8 @@ class Car():
             self.speed -= const.ACC_RATE / 2
         elif self.speed < 0:
             self.speed += const.ACC_RATE / 2
+        # fixing rounding error
+        self.speed = round(self.speed, 1)
 
     # lazy implementation of collision
     # it's easier to crash the car if it doesn't land on
@@ -87,7 +92,7 @@ class Car():
         if self.tile.grid + grid_offset == self.tile.next.grid:
             self.score += const.TILE_SCORE
             self.tile = self.tile.next
-            if self.tile.grid == self.start_tile.grid:
+            if self.tile.grid == self.start_tile.next.grid:
                 self.laps += 1
                 self.score += const.LAP_BONUS
                 if self.laps >= const.LAPS_PER_GAME:
@@ -116,7 +121,11 @@ class Car():
         self.velocity = self.direction.vector * self.speed
 
     def get_surface(self):
-        return pygame.transform.rotate(self.surface, self.direction.degrees)
+        if self.alive:
+            return pygame.transform.rotate(self.surface, self.direction.degrees)
+        else:
+            self.crashed_timer -= 1
+            return pygame.transform.rotate(self._images["crashed"], self.direction.degrees)
 
     def get_rect(self):
         self.rect.center = (
