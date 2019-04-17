@@ -102,7 +102,7 @@ class Core:
             " Right: {0: .1f}".format(distances["right"]),
         ]
         degrees_delta_text = [
-            " Degree Delta: {}".format(carvision.get_singed_degrees_delta(car))
+            " Degrees Delta: {}".format(carvision.get_singed_degrees_delta(car))
         ]
 
         return self.text_renderer.texts_to_surface(
