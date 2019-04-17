@@ -40,7 +40,7 @@ class NeatCore(lib.Core):
     def new_game(self):
         super().new_game()
         for tile in self.env.track.track_tiles:
-            tile.neighbor_walls = carvision.get_neighbor_walls(tile)
+            tile.scaled_neighbor_walls = carvision.get_scaled_neighbor_walls(tile)
         return
 
     def new_cars(self):

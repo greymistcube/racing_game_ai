@@ -13,15 +13,13 @@ grid_walls = {
 
 def get_car_vision(car):
     # get all the walls in its neighboring tiles
-    walls = car.tile.neighbor_walls
-    # convert to scaled pixel coordinates
-    walls = np.array([[wall[0].scaled, wall[1].scaled] for wall in walls])
+    walls = car.tile.scaled_neighbor_walls
     # get distances in four directions
     distances = get_distances(car, walls)
 
     return distances
 
-def get_neighbor_walls(tile):
+def get_scaled_neighbor_walls(tile):
     grid_delta_prev = tile.prev.grid - tile.grid
     grid_delta_next = tile.next.grid - tile.grid
 
@@ -45,7 +43,9 @@ def get_neighbor_walls(tile):
                     grid_walls[cardinal][1] + grid_delta_next,
                 )
             )
-
+    
+    # convert to scaled pixel coordinates and return it as a numpy array
+    walls = np.array([[wall[0].scaled, wall[1].scaled] for wall in walls])
     return walls
 
 def get_distances(car, walls):
