@@ -158,7 +158,7 @@ class SmartCar(lib.car.Car):
         # if car went backwards, kill it off
         elif self.prev_tile.grid == self.tile.next.grid:
             self.alive = False
-        # if car went worwards, reset timer
+        # if car went forwards, reset timer
         elif self.prev_tile.grid == self.tile.prev.grid:
             self.time_bonus += self.timer
             self.timer = const.TIMER

@@ -32,7 +32,6 @@ class Car():
             self.surface = random.choice(list(self._images.values()))
         else:
             self.surface = self._images[color]
-        self.start_tile = tile
         self.tile = tile
         # initially starts at the middle of the starting tile
         self.rel_x = const.TILE_SIZE // 2
@@ -52,9 +51,12 @@ class Car():
     def update(self):
         self.rel_x += self.velocity[1]
         self.rel_y += self.velocity[0]
-        self.check_crash()
-        if self.alive:
-            self.update_tile()
+        grid_offset = _grid_offset(self.rel_x, self.rel_y)
+        if grid_offset:
+            if self.check_crash(grid_offset):
+                self.alive = False
+            else:
+                self.update_tile(grid_offset)
         # fixing rounding error
         self.speed = round(self.speed, 1)
 
@@ -64,22 +66,20 @@ class Car():
     # although this doesn't fully cover the diagonally crossing cases
     # those should be rather extreme edge cases
     # this only makes corner turning slightly more tighter
-    def check_crash(self):
-        grid_offset = _grid_offset(self.rel_x, self.rel_y)
+    def check_crash(self, grid_offset):
         if self.tile.grid + grid_offset not in [
                 self.tile.prev.grid,
-                self.tile.grid,
                 self.tile.next.grid,
             ]:
-            self.alive = False
-        return
+            return True
+        else:
+            return False
 
-    def update_tile(self):
-        grid_offset = _grid_offset(self.rel_x, self.rel_y)
+    def update_tile(self, grid_offset):
         if self.tile.grid + grid_offset == self.tile.next.grid:
             self.score += const.TILE_SCORE
             self.tile = self.tile.next
-            if self.tile.grid == self.start_tile.next.grid:
+            if self.tile.prev.is_start_tile:
                 self.laps += 1
                 self.score += const.LAP_BONUS
                 if self.laps >= const.LAPS_PER_GAME:
@@ -87,7 +87,7 @@ class Car():
         elif self.tile.grid + grid_offset == self.tile.prev.grid:
             self.score -= const.TILE_SCORE
             self.tile = self.tile.prev
-            if self.tile.grid == self.start_tile.grid:
+            if self.tile.next.is_start_tile:
                 self.laps -= 1
                 self.score -= const.LAP_BONUS
         self.rel_x += const.TILE_SIZE * (grid_offset.x * (-1))
