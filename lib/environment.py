@@ -31,8 +31,8 @@ class Environment:
         self.score = max([car.score for car in self.cars])
         for car in self.cars[:]:
             if not car.alive:
-                self.crashed_cars.append(car)
                 self.cars.remove(car)
+                self.crashed_cars.append(car)
                 self.num_alive -= 1
 
     def game_over(self):

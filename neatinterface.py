@@ -148,6 +148,13 @@ class SmartCar(lib.car.Car):
         # randomize starting angle
         self.direction.rotate(random.randint(-10, 10) * const.TURN_SPD)
 
+    # take care of stuck cars
+    def check_crash(self):
+        super().check_crash()
+        if self.timer < 0:
+            self.alive = False
+        return
+
     def get_color(self, genome):
         return self._genome_to_color[genome.genome_type]
 

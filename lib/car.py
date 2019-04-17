@@ -23,8 +23,8 @@ class Car():
         "green": load_image("./rsc/img/green_car.png"),
         "yellow": load_image("./rsc/img/yellow_car.png"),
         "red": load_image("./rsc/img/red_car.png"),
-        "crashed": load_image("./rsc/img/crashed_car.png")
     }
+    _crashed_image = load_image("./rsc/img/crashed_car.png")
 
     def __init__(self, tile, color=None):
         self.rect = self._image.get_rect()
@@ -72,8 +72,6 @@ class Car():
     # this only makes corner turning slightly more tighter
     def check_crash(self):
         grid_offset = _grid_offset(self.rel_x, self.rel_y)
-        if self.timer < 0:
-            self.alive = False
         if self.tile.grid + grid_offset not in [
                 self.tile.prev.grid,
                 self.tile.grid,
@@ -100,7 +98,7 @@ class Car():
         elif self.tile.grid + grid_offset == self.tile.prev.grid:
             self.score -= const.TILE_SCORE
             self.tile = self.tile.prev
-            # just kill off the car if it goes backwards
+            # just kill off the car if it tries to go backwards
             self.alive = False
         self.rel_x += const.TILE_SIZE * (x_axis_offset * (-1))
         self.rel_y += const.TILE_SIZE * (y_axis_offset * (-1))
@@ -125,7 +123,7 @@ class Car():
             return pygame.transform.rotate(self.surface, self.direction.degrees)
         else:
             self.crashed_timer -= 1
-            return pygame.transform.rotate(self._images["crashed"], self.direction.degrees)
+            return pygame.transform.rotate(self._crashed_image, self.direction.degrees)
 
     def get_rect(self):
         self.rect.center = (
