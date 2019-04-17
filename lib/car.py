@@ -45,13 +45,11 @@ class Car():
         # number of laps starts counting after passing the start line
         self.laps = -1
         self.score = 0
-        self.timer = const.TIMER
         self.alive = True
         self.crashed_timer = const.CRASHED_TIMER
         return
 
     def update(self):
-        self.timer -= 1
         self.rel_x += self.velocity[1]
         self.rel_y += self.velocity[0]
         self.check_crash()
@@ -80,9 +78,6 @@ class Car():
         x_axis_offset = _axis_offset(self.rel_x)
         y_axis_offset = _axis_offset(self.rel_y)
         grid_offset = _grid_offset(self.rel_x, self.rel_y)
-        if grid_offset != Grid(0, 0):
-            self.score += self.timer // 2
-            self.timer = const.TIMER
         if self.tile.grid + grid_offset == self.tile.next.grid:
             self.score += const.TILE_SCORE
             self.tile = self.tile.next
@@ -94,8 +89,6 @@ class Car():
         elif self.tile.grid + grid_offset == self.tile.prev.grid:
             self.score -= const.TILE_SCORE
             self.tile = self.tile.prev
-            # just kill off the car if it tries to go backwards
-            self.alive = False
         self.rel_x += const.TILE_SIZE * (x_axis_offset * (-1))
         self.rel_y += const.TILE_SIZE * (y_axis_offset * (-1))
         return

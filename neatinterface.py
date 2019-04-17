@@ -62,7 +62,7 @@ class NeatCore(lib.Core):
             # if the direction of the car is closer to the direction of
             # the tile grid, give reward
             scores = [
-                car.score \
+                car.score + car.time_bonus \
                 + (180 - abs(carvision.get_singed_degrees_delta(car))) * 10 \
                 for car in self.cars
             ]
@@ -156,14 +156,36 @@ class SmartCar(lib.car.Car):
         # override randomized color
         self.genome = genome
         self.surface = self._images[self.get_color(genome)]
+
+        # extra features to incentivize going faster
+        self.time_bonus = 0
+        self.timer = const.TIMER
+        self.prev_tile = self.tile
+
         # randomize starting angle
         self.direction.rotate(random.randint(-10, 10) * const.TURN_SPD)
 
-    # take care of stuck cars
-    def check_crash(self):
-        super().check_crash()
+    def update(self):
+        super().update()
+        # if car is still on the same tile, countdown the timer
+        if self.prev_tile.grid == self.tile.grid:
+            self.timer -= 1
+        # if car went backwards, kill it off
+        elif self.prev_tile.grid == self.tile.next.grid:
+            self.alive = False
+        # if car went worwards, reset timer
+        elif self.prev_tile.grid == self.tile.prev.grid:
+            self.time_bonus += self.timer
+            self.timer = const.TIMER
+            self.prev_tile = self.tile
+        # if not any of the cases above, something went wrong
+        else:
+            raise Exception("tile update error")
+        # if timer ran out, kill off the car
         if self.timer < 0:
             self.alive = False
+        # fixing rounding error
+        self.speed = round(self.speed, 1)
         return
 
     def get_color(self, genome):
@@ -173,8 +195,12 @@ class SmartCar(lib.car.Car):
         pred = self.genome.predict(x)
         if pred[0] and self.speed < const.SPD_LIMIT:
             self.speed += const.ACC_RATE
-        if pred[1] and self.speed > -const.SPD_LIMIT:
+        elif pred[1] and self.speed > -const.SPD_LIMIT:
             self.speed -= const.ACC_RATE
+        elif self.speed > 0:
+            self.speed -= const.ACC_RATE / 2
+        elif self.speed < 0:
+            self.speed += const.ACC_RATE / 2
         if pred[2]:
             self.direction.rotate(const.TURN_SPD)
         if pred[3]:

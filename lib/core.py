@@ -63,7 +63,7 @@ class Core:
         for car in self.cars:
             car.handle_events(self.events)
         self.env.update()
-        self.best_score = max(self.best_score, self.env.score)
+        self.best_score = self.env.score
         """
         degrees_delta = carvision.get_singed_degrees_delta(self.cars[0])
         distances = carvision.get_car_vision(self.cars[0])
