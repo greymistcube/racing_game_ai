@@ -47,6 +47,7 @@ class NeatCore(lib.Core):
         return [SmartCar(self.env.track.start_tile, genome) for genome in self.population.genomes]
 
     def update(self):
+        self.clock.tick(settings.tickrate)
         self.events.update()
         settings.update(self.events)
         # only cycle through cars alive in the environment for optimization
@@ -87,11 +88,21 @@ class NeatCore(lib.Core):
 
         texts = [
             " Game: {}".format(self.game_count),
-            " Score: {}".format(self.best_score),
+            " Top Score: {}".format(self.best_score),
             " Alive: {}".format(self.env.num_alive),
             " (Blue) Survived: {}".format(num_survived),
             " (Green) Mutated: {}".format(num_mutated),
             " (Yellow) Bred: {}".format(num_bred)
+        ]
+
+        return self.text_renderer.texts_to_surface(texts)
+
+    def get_debug_surface(self):
+        texts = [
+            " Top Speed: {0: .1f}".format(
+                max([car.speed for car in self.env.cars])
+            ),
+            " FPS: {}".format(1000 // self.clock.get_time()),
         ]
 
         return self.text_renderer.texts_to_surface(texts)
@@ -147,6 +158,13 @@ class SmartCar(lib.car.Car):
         self.surface = self._images[self.get_color(genome)]
         # randomize starting angle
         self.direction.rotate(random.randint(-10, 10) * const.TURN_SPD)
+
+    # take care of stuck cars
+    def check_crash(self):
+        super().check_crash()
+        if self.timer < 0:
+            self.alive = False
+        return
 
     def get_color(self, genome):
         return self._genome_to_color[genome.genome_type]

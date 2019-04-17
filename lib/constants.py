@@ -2,7 +2,7 @@
 WIDTH, HEIGHT = (320, 240)
 RESOLUTION = (WIDTH, HEIGHT)
 ZOOM_LEVEL = 2
-TICKRATE = 60
+TICKRATE = 30
 
 # environment variables
 TILE_SIZE = 20
@@ -13,8 +13,8 @@ LAPS_PER_GAME = 2
 # car variables
 ACC_RATE = 0.2
 SPD_LIMIT = 4.0
-TURN_SPD = 3
-TIMER = 100
+TURN_SPD = 6
+TIMER = 60
 CRASHED_TIMER = 30
 
 # predefined color tuples
