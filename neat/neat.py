@@ -66,7 +66,6 @@ class Population:
             self.genomes[0].h_dim,
             self.genomes[0].y_dim
         ))
-        print("best w1 {}".format(self.genomes[0].w1.round(2)))
         print("----------------")
 
         survived = evolver.get_survived(self.genomes, self.num_survive)
