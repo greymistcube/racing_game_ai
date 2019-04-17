@@ -1,6 +1,5 @@
 import random
 
-import numpy as np
 import pygame
 
 import lib
@@ -41,6 +40,7 @@ class NeatCore(lib.Core):
     def new_game(self):
         super().new_game()
         self.best_score = 0
+        # preprocessing data for later use for optimization
         for tile in self.env.track.track_tiles:
             tile.scaled_neighbor_walls = carvision.get_scaled_neighbor_walls(tile)
         return
@@ -90,7 +90,7 @@ class NeatCore(lib.Core):
 
         texts = [
             " Game: {}".format(self.game_count),
-            " Top Score: {}".format(self.best_score),
+            " Best Score: {}".format(self.best_score),
             " Alive: {}".format(self.env.num_alive),
             " (Blue) Survived: {}".format(num_survived),
             " (Green) Mutated: {}".format(num_mutated),
@@ -117,10 +117,10 @@ class NeatCore(lib.Core):
             return [
                 car.speed,
                 degrees_delta / 180,
-                distances[0],
-                distances[1],
-                distances[2],
-                distances[3],
+                distances["front"],
+                distances["back"],
+                distances["left"],
+                distances["right"],
             ]
         # this part shouldn't really happen since
         # only living cars are called to think

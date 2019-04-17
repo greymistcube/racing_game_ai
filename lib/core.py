@@ -1,9 +1,12 @@
 import pygame
+
 import lib.constants as const
 from lib.settings import Settings
 from lib.events import Events
 from lib.environment import Environment
 from lib.car import Car
+
+import carvision
 
 pygame.init()
 settings = Settings()
@@ -89,5 +92,14 @@ class Core:
             " Speed: {0: .1f}".format(self.env.cars[0].speed),
             " FPS: {}".format(1000 // self.clock.get_time()),
         ]
+        car = self.cars[0]
+        walls = carvision.get_scaled_neighbor_walls(car.tile)
+        distances = carvision.get_distances(car, walls)
+        distance_texts = [
+            " Front: {0: .1f}".format(distances["front"]),
+            " Back: {0: .1f}".format(distances["back"]),
+            " Left: {0: .1f}".format(distances["left"]),
+            " Right: {0: .1f}".format(distances["right"]),
+        ]
 
-        return self.text_renderer.texts_to_surface(texts)
+        return self.text_renderer.texts_to_surface(texts + distance_texts)
