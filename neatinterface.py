@@ -37,6 +37,12 @@ class NeatCore(lib.Core):
         self.walls = None
         return
 
+    def new_game(self):
+        super().new_game()
+        for tile in self.env.track.track_tiles:
+            tile.neighbor_walls = carvision.get_neighbor_walls(tile)
+        return
+
     def new_cars(self):
         return [SmartCar(self.env.track.start_tile, genome) for genome in self.population.genomes]
 
@@ -47,6 +53,7 @@ class NeatCore(lib.Core):
         for car in self.env.cars:
             car.think(self.get_x(car))
         self.env.update()
+        self.best_score = max(self.best_score, self.env.score)
 
     def game_over(self):
         if self.env.game_over():
@@ -73,7 +80,7 @@ class NeatCore(lib.Core):
 
         texts = [
             " Game: {}".format(self.game_count),
-            " Score: {}".format(self.env.score),
+            " Score: {}".format(self.best_score),
             " Alive: {}".format(self.env.num_alive),
             " (Blue) Survived: {}".format(num_survived),
             " (Green) Mutated: {}".format(num_mutated),
