@@ -60,15 +60,15 @@ class NeatCore(lib.Core):
 
     def game_over(self):
         if self.env.game_over():
-            # added incentive
-            # if the direction of the car is closer to the direction of
-            # the tile grid, give reward
+            # added incentives
             scores = [
                 car.score \
                 # negate crossing the start line bonus
                 - const.LAP_BONUS \
                 # strong time incentive once a lap is finished
                 + car.time_bonus * car.laps * 10 \
+                # if the direction of the car is closer to the direction of
+                # the tile grid, give reward
                 + (180 - abs(carvision.get_singed_degrees_delta(car))) \
                 for car in self.cars
             ]

@@ -107,4 +107,4 @@ def get_distances(car, walls):
 
 def get_singed_degrees_delta(car):
     delta = (car.direction.degrees - car.tile.direction.degrees) % 360
-    return delta if delta < 180 else (delta - 360) / 180
+    return delta if delta < 180 else (delta - 360)
