@@ -97,6 +97,16 @@ class NeatCore(lib.Core):
 
         return self.text_renderer.texts_to_surface(texts)
 
+    def get_debug_surface(self):
+        texts = [
+            " Top Speed: {0: .1f}".format(
+                max([car.speed for car in self.env.cars])
+            ),
+            " FPS: {}".format(1000 // self.clock.get_time()),
+        ]
+
+        return self.text_renderer.texts_to_surface(texts)
+
     # extended methods
     def get_x(self, car):
         if car.alive:
