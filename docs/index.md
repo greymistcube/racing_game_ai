@@ -130,7 +130,7 @@ from the $x$-axis, we rotate the entire plane to align $v$ with the $x$-axis.
 This can be easily done by multiplying everything with the rotational matrix
 
 $$
-R(\theta) = \left()
+R(\theta) = \left(
 \begin{matrix}
 \cos(\theta) & -\sin(\theta) \\
 \sin(\theta) & \cos(\theta)
