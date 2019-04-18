@@ -47,6 +47,11 @@ to show the debug screen.
 
 # Development
 
+All assets, except the font, are made by me, and please feel free to use them
+in any way you see fit. If you like the font and would like to use it,
+please consider making a small donation to the original author
+by following the link below.
+
  * [VSCode][vscode_url]: Code editor used for programming.
  * [Aseprite][aseprite_url]: Drawing tool used for pixel art.
  * [monogram][monogram_url]: Pretty looking monospaced pixel font.
