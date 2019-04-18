@@ -85,22 +85,26 @@ to use in mind very early on in the stage. They are as follows:
  * distance measurements to any obstructing object in four directions:
  front, back, left, and right
 
+Since the outputs of a such network would correspond to four directional
+inputs on a keyboard, the whole training scheme would start with a
+network of the shape on the upper left corner below and evolve its
+own topology as time progresses.
+
 ![Model 01](./img/model_01.png)
 ![Model 02](./img/model_02.png)
 ![Model 03](./img/model_03.png)
 ![Model 04](./img/model_04.png)
-
-Since the outputs of a such network would correspond to four directional
-inputs on a keyboard, the whole training scheme would start with a
-network of the shape on the upper left corner above and evolve its
-own topology as time progresses.
 
 Going back to the input variables, determining the value for the first
 is the most obvious. As for the second, I decided to use an angle
 measurement ranging $[-180, 180)$. This isn't too hard since the directional
 vector of a car is derived from its angle and speed. The last is the only
 one that some explanation might be needed on how the needed values are
-acquired.
+acquired. The goal is the measure the length of the line segments in four
+directions shown below. This would be anologous to getting the distance
+measurements to obstructing objects via infrared sensors on a car.
+
+![Sensors](./img/sensors.png)
 
 ## Solving the Distance Problem
 
@@ -123,7 +127,17 @@ to get the following.
 
 The problem looks simpler now, but we can do more. Knowing the angle of $v$
 from the $x$-axis, we rotate the entire plane to align $v$ with the $x$-axis.
-Then we get the following.
+This can be easily done by multiplying everything with the rotational matrix
+
+$$
+R(\theta) = 
+\begin{matrix}
+\cos(\theta) & -\sin(\theta) \\
+\sin(\theta) & \cos(\theta)
+\end{matrix}
+$$
+
+Where $\theta$ is the angle from $v$ to the $x$-axis. Then we get the following.
 
 ![Distance Example 03](./img/distance_example_03.png)
 
@@ -220,6 +234,8 @@ likely to pass on its gene, making it harder where the left turning problem
 is solved by only using right turns. 
 
 ## The Problem of Speeding Cars
+
+
 
 # Other Discussions
 
