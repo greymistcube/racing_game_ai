@@ -5,10 +5,10 @@ mathjax: true
 
 # Racing Game with NEAT
 
-![Game Screen](./img/racing_game_ai_peek.gif)
+![Game Screen](./img/racing_game_neat_peek.gif)
 
 This is a continuation of my previous project
-[Flappy Bird Clone with NEAT.](https://github.com/greymistcube/flappy_bird_ai)
+[Flappy Bird Clone with NEAT.](https://github.com/greymistcube/flappy_bird_neat)
 If you want to know about how this particular AI works in general,
 please visit the page for my previous project.
 

@@ -1,9 +1,9 @@
 # Racing Game with NEAT
 
-![Game Screen](./docs/img/racing_game_ai_peek.gif)
+![Game Screen](./docs/img/racing_game_neat_peek.gif)
 
 More information about this project can be found on
-[this github page.](https://greymistcube.github.io/racing_game_ai/)
+[this github page.](https://greymistcube.github.io/racing_game_neat/)
 
 # Dependencies
 
