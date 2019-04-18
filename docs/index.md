@@ -53,7 +53,7 @@ solving the problem for the AI, I'd say this is a good test case scenario
 with relations between input variables and output variables complex enough
 where we don't need to worry too much about such problem.
 
-## Raw Values for Input Variables
+## Raw Values as Inputs
 
 If one were to be very naive about this, one can just feed in a bunch of
 "raw" values to the AI, such as $x$ and $y$ coordinates of the car, its
@@ -65,7 +65,7 @@ as it would take unfeasibly long amount of time without any rule modifications
 to the current AI, but there seems to be little to no reason why it shouldn't
 work when I let the genomes grow organically. More on this later.
 
-## Relative Values for Input Variables
+## Relative Values as Inputs
 
 As mentioned above, one of my primary goals was to simulate an autonomous
 driving environment. What I meant by this is that I wanted to "limit" the amount
@@ -257,7 +257,7 @@ making the turn at later steps.
 AI's thought process can be constructed as something like this.
 
  * Check if there is enough space to the left of the car. If there is, proceed
- to the next condition.
+ to check the next condition.
  * If distance to the wall is less than $a$, then turn left.
 
 For the faster running case, allowed value for $a$ is rather restricted.
@@ -296,5 +296,53 @@ to the next generation.
 
 # Other Discussions
 
+## Using Raw Data
+
+As I have mentioned before, I thought the AI's behaviour was interesting
+enough that further discussion is granted. Even when feeding in the $x$ and $y$
+coordinates of the car, its direction $v$ as another paired values, and
+all relavent end coordinates of nearby walls as input data, the AI was able
+to learn how to drive eventually. However, how the AI got there was quite
+different from the setting used above. Instead of learning how to "turn left"
+or "turn right", each of these were further divided into smaller
+features and these smaller features were all learned separately.
+
+![Left Turn 01](./img/turn_left_01.png)&nbsp;
+![Left Turn 02](./img/turn_left_02.png)&nbsp;
+![Left Turn 03](./img/turn_left_03.png)&nbsp;
+![Left Turn 04](./img/turn_left_04.png)
+
+In this case, all four cases of left turning corners were treated as
+being different and hence even if the AI got very successful at turning
+certain left turning corners, say the first and the last, it would continue
+to fail quite miserably at turning the other two left turning corners.
+The AI even treated the straight horizontal/vertical tracks as
+different types depending on whether it was going left/right or up/down.
+
+Eventually, the AI was capable enough to learn all the necessary features
+and beat the game with 8 hidden nodes. Considering there are at least
+12 different types depending on track orientation, the hidden nodes
+probably don't line up nicely with readily recognizable features for humans.
+But then again, that is part of what ANN interesting.
+
 # Future Plans
-## Q Learning
+
+NEAT algorithm used in this project was pretty much copy pasted from
+my previous project. Most of my time was consumed in programming the
+game and creating a wrapper class to convert the data from the game
+to feed in to the AI. I wanted to show that such AI can be general enough
+to be deployed "readily" to other kinds of games.
+
+While working on this project, I did gain some insight into how the algorithm
+may be improved further. For instance, if my hypothesis about sequential
+feature learning is true, the rate of growth for search space shouldn't
+be strictly exponential. If $w_{1, 0}, \dots, w_{1, k}$ are already optimized,
+then introduction of new weights $w_{2, 0} \dots, w_{2, k}$ shouldn't result
+in search for optimal weights in the entire space of all possible weights
+but in some subspace around optimized $w_{1, 0}, \dots, w_{1, k}$ values.
+
+Again, this reasoning is still not without problems. What if a solution
+to a problem is a network with $2$ hidden nodes representing $3$ different
+"features" and each of these "features" are fundamentally different from
+what a network can learn with with a single hidden node? The problem
+of local optima rears its head again here. Life isn't so simple. :(

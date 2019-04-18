@@ -10,14 +10,14 @@ More information about this project can be found on
 [![pygame][pygame_img]][pygame_url]
 [![numpy][numpy_img]][numpy_url]
 
-This project only requires numpy and pygame packages to run.
+This project only requires `numpy` and `pygame` packages to run.
 To install the required packages, run the following commands.
 ```
 pip install numpy
 pip install pygame
 ```
 
-# Usage Examples
+# Usage
 
 Run with
 ```
