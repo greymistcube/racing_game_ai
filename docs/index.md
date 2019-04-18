@@ -307,9 +307,10 @@ different from the setting used above. Instead of learning how to "turn left"
 or "turn right", each of these were further divided into smaller
 features and these smaller features were all learned separately.
 
-![Left Turn 01](./img/turn_left_01.png)&nbsp;
-![Left Turn 02](./img/turn_left_02.png)&nbsp;
-![Left Turn 03](./img/turn_left_03.png)&nbsp;
+![Left Turn 01](./img/turn_left_01.png)
+![Left Turn 02](./img/turn_left_02.png)
+
+![Left Turn 03](./img/turn_left_03.png)
 ![Left Turn 04](./img/turn_left_04.png)
 
 In this case, all four cases of left turning corners were treated as

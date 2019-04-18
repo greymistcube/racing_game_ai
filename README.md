@@ -20,19 +20,24 @@ pip install pygame
 # Usage
 
 Run with
+
 ```
 python game.py
 ```
+
 to start the game normally in a playable mode with the default settings.
 Various command line arguments may be passed on to change the settings.
 For example,
+
 ```
 python game.py -z3 -n200 neat
 ```
+
 will start the game with 3x display zoom and 200 cars per generation for
 the AI to train on. For more help, run the program with `-h` as its argument.
 
 # Controls
+
 Use <kbd>&uarr;</kbd>, <kbd>&darr;</kbd>, <kbd>&larr;</kbd>, and <kbd>&rarr;</kbd>
 keys to control the car. Number keys <kbd>0</kbd>, ..., <kbd>9</kbd>
 may be used to change the game speed. This is mainly used to speed up
@@ -40,7 +45,14 @@ the training process for the AI.
 Use <kbd>i</kbd> to toggle the information overlay and <kbd>d</kbd>
 to show the debug screen.
 
+# Development
+
+ * [VSCode][vscode_url]: Code editor used for programming.
+ * [Aseprite][aseprite_url]: Drawing tool used for pixel art.
+ * [monogram][monogram_url]: Pretty looking monospaced pixel font.
+
 # License
+
 [![MIT][MIT_img]][MIT_url]
 
 This project is released under the [MIT License.][MIT_url]
@@ -53,3 +65,6 @@ See the [LICENSE](./LICENSE) file for details.
 [numpy_url]: https://www.numpy.org/
 [MIT_img]: https://img.shields.io/badge/license-MIT-blue.svg
 [MIT_url]: https://opensource.org/licenses/MIT
+[vscode_url]: https://code.visualstudio.com/
+[aseprite_url]: https://www.aseprite.org/
+[monogram_url]: https://datagoblin.itch.io/monogram
