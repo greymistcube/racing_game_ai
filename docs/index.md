@@ -346,4 +346,19 @@ Again, this reasoning is still not without problems. What if a solution
 to a problem is a network with $2$ hidden nodes representing $3$ different
 "features" and each of these "features" are fundamentally different from
 what a network can learn with with a single hidden node? The problem
-of local optima rears its head again here. Life isn't so simple. :(
+of local optima rears its head again here. Life isn't so simple.
+
+As the game mechanics were lot more complicated than my previous
+project, a good chunk of time was used just to make the game. As it stands,
+some major refactoring of the codebase and optimization is needed.
+Also, NEAT was pretty much used as it was, and it might need an update
+from some further insights gathered while working on this project.
+
+Most of the work done so far was from the ANN point of
+view. I haven't made much point on the RL process.
+I'll probably look into RL separately in near future.
+There are two immediate possible paths that I'm considering following
+this.
+
+ * Use Q-learning on either one of the games I made or a new game.
+ * Dive into current NEAT algorithm for more rigorous understanding of the AI.
