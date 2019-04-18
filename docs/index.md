@@ -130,11 +130,12 @@ from the $x$-axis, we rotate the entire plane to align $v$ with the $x$-axis.
 This can be easily done by multiplying everything with the rotational matrix
 
 $$
-R(\theta) = 
+R(\theta) = \left()
 \begin{matrix}
 \cos(\theta) & -\sin(\theta) \\
 \sin(\theta) & \cos(\theta)
 \end{matrix}
+\right)
 $$
 
 Where $\theta$ is the angle from $v$ to the $x$-axis. Then we get the following.
@@ -233,9 +234,65 @@ is that cars that ran into a wrong wall (the wall on the right) is less
 likely to pass on its gene, making it harder where the left turning problem
 is solved by only using right turns. 
 
+## The Problem of Slow Cars
+
+Aside from penalizing cars for facing the wrong way, if the only goal for
+the AI was to complete the laps, we get presented with another problem.
+Interestingly, just like humans driving a car, driving slow is in general
+also safer for the AI. One reason would be that going slow allows more time
+for the AI to react, which in turn results in leniency of choosing its
+weights. Consider the following two cases.
+
+![Fast Speed Rounder Turn](./img/turn_example_01.png)
+![Slow Speed Sharper Turn](./img/turn_example_02.png)
+
+Going faster means that the turns are rounder, which in turn requires more
+space to maneuver the car. If the picture on the left represents a car
+going at a fast speed and yellow line representing the path of the car
+with immediate sharpest turn possible, then there isn't much of a leeway.
+On the other hand, if the picture on the right represents a car going at
+a slower speed, it is able to make sharper turns and the car can start
+making the turn at later steps.
+
+AI's thought process can be constructed as something like this.
+
+ * Check if there is enough space to the left of the car. If there is, proceed
+ to the next condition.
+ * If distance to the wall is less than $a$, then turn left.
+
+For the faster running case, allowed value for $a$ is rather restricted.
+If the distance measurement is restricted from $0$ to $1$ (this is partly
+due to normalization, with $1$ representing the width/height of a block grid),
+then $a$ would have to be in something like $[0.8, 1]$. On the other hand,
+for the slower car, $a$ can be in something like $[0.4, 1]$.
+From the AI's perspective, it is *three times more likely*
+that a solution to the racing game may be discovered when the car is
+running slow.
+
 ## The Problem of Speeding Cars
 
+So then, if we want the cars to go fast, just give them bonus points for going
+fast. Problem solved. Right?
 
+Well, it is true to some extent that we can motivate the cars to go faster
+by incentivizing faster speed, be it time to cross a grid, time to finish
+a lap, or just plain ol' speed, but the reward system has to be structed with
+care.
+
+If the incentive to speed is too great, what happens is that the cars will
+just try to accelerate as much as possible from the get-go and just crash
+into the wall at the end. Since during the early stages, making a small
+turn to make a miniscule improvement to its performance mainly comes from
+some random deviation from the population. This is often at the cost of
+its speed, and it is hard to outperform the accrued bonus points for going
+as fast as possible from some dumb AI that presses up all the time.
+The result is that the vast majority of cars continuing to run straight
+into the wall ahead for each generation.
+
+Some of this problem is metigated by the penalization of angle difference
+mentioned above, but if time bonus isn't weighted carefully, a genome
+with a "primitive turning gene" has a very low chance to pass on its gene
+to the next generation.
 
 # Other Discussions
 
