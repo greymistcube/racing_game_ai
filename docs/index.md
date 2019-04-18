@@ -46,7 +46,7 @@ So if we want to figure out whether to turn left or right to change the
 values of $x$ and $y$ the way we want, we must first figure out what the
 signs of $x$ and $y$ are and then act accordingly.
 
-# Chossing the Variables
+# Choosing the Variables
 
 In my previous post, although I have mentioned that one must be wary of
 solving the problem for the AI, I'd say this is a good test case scenario
@@ -85,7 +85,18 @@ to use in mind very early on in the stage. They are as follows:
  * distance measurements to any obstructing object in four directions:
  front, back, left, and right
 
-The first is the most obvious. As for the second, I decided to use an angle
+![Model 01](./img/model_01.png)
+![Model 02](./img/model_02.png)
+![Model 03](./img/model_03.png)
+![Model 04](./img/model_04.png)
+
+Since the outputs of a such network would correspond to four directional
+inputs on a keyboard, the whole training scheme would start with a
+network of the shape on the upper left corner above and evolve its
+own topology as time progresses.
+
+Going back to the input variables, determining the value for the first
+is the most obvious. As for the second, I decided to use an angle
 measurement ranging $[-180, 180)$. This isn't too hard since the directional
 vector of a car is derived from its angle and speed. The last is the only
 one that some explanation might be needed on how the needed values are
@@ -130,13 +141,52 @@ that were quite noticable.
 
 ## Learning One Feature at a Time
 
-In my previous post, I have hypothesized that the network would learn
-features sequentially and that previous learned feature would be rather
-stable.
-
 ![Network Example](./img/network_example.png)
 
+In my previous post, I have hypothesized that the network would learn
+features sequentially and that previous learned feature would be rather
+stable. My short experiment on this project seems to confirm this view.
+
+For example, down the line in the training process, if we get a network
+like shown above, where the hidden nodes were progressively added in
+from yellow to cyan to purple, each individual hidden node represents
+a single logical feature.
+
+![Model 02](./img/model_02.png)
+
+From what I can tell, during the AI's training when the network is of the shape
+above, it completes the task of learning "when to decelerate (so as to not
+to run straight into a wall)" and "when to turn right". With these
+two features locked down, the network becomes very oblivious to the option
+of turning left and no amount of training seems to help unless a new
+hidden node is added.
+
+Moreover, due to how randomized tracks are constructed, the AI tend to learn
+how to turn right before turning left since it is presented with right turning
+corners more often. However, in some rare cases, due to some random luck of
+getting presented with more left turns than right turns in the early stages,
+the AI learns how to turn left and refuses to learn how to turn right
+until a new hidden node is introduced.
+
 ## Learning a Single Feature Too Well
+
+![Bad Habbit Example](./img/bad_habbit.gif)
+
+Sometimes, the AI would learn how to turn right *too well* resulting in
+some ridiculous driving pattern like as shown above. As you can see,
+the game is beatable by using only the right turns, and if the AI figures it
+out, it will try to exploit this feature.
+
+This isn't a particularly desirable result, since if we want the cars to also
+go as fast as possible, using both the left and the right turns would be
+more efficient in achieving this goal. What is even more problematic is that
+the AI can get pretty stable by being able to beat the game quite reliably.
+If this happens, the chances of learning how to turn left becomes very slim,
+as any deviation from current stragety is likely to result in a low score.
+
+## Having the Right Incentives
+
+## Running Straight into a Wall
 
 # Other Discussions
 
