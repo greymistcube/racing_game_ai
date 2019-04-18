@@ -65,17 +65,80 @@ as it would take unfeasibly long amount of time without any rule modifications
 to the current AI, but there seems to be little to no reason why it shouldn't
 work when I let the genomes grow organically. More on this later.
 
-# Installing Sensors
+## Relative Values for Input Variables
+
+As mentioned above, one of my primary goals was to simulate an autonomous
+driving environment. What I meant by this is that I wanted to "limit" the amount
+and the kind of information a car can have to what it can "see". I know
+the analogy is pretty weak since any real world autonomous driving wouldn't
+work like this. Any self driving car would have access to its own *logitude*
+and *latitude* via GPS and detailed map data to aid in its thinking.
+In any case, I wanted to simulate an agent akin to a human driver
+(perhaps with a severe case of amnesia since it doesn't have any map knowledge).
+I hope anyone can still see the motivation behind this reasoning.
+
+As this is more of a case study, I had a particular set of variables
+to use in mind very early on in the stage. They are as follows:
+
+ * speed of the vehicle
+ * direction to go relative to the direction that the car is headed
+ * distance measurements to any obstructing object in four directions:
+ front, back, left, and right
+
+The first is the most obvious. As for the second, I decided to use an angle
+measurement ranging $[-180, 180)$. This isn't too hard since the directional
+vector of a car is derived from its angle and speed. The last is the only
+one that some explanation might be needed on how the needed values are
+acquired.
 
 ## Solving the Distance Problem
 
+Let's say we have a car at point $p = (p_{x}, p_{y})$ with its directional
+vector $v = (v_{x}, v_{y})$ and some line segements as walls as depicted below.
+
+![Distance Example 01](./img/distance_example_01.png)
+
+We'd like to compute not only the distances to all walls from point $p$ in
+the direction of $v$, but also all distances to all walls in all four
+directions, which are multiples of $90$ degree rotations of $v$.
+Knowing the angle for $v$ and all the relavent coordinates, it is
+possible to compute these values directly. Although simple as it may seem,
+deriving the formulae and computing the solutions this way is rather tedious
+and not so straightforward. However, there is a simpler way.
+To do this, we first translate the plane by subtracting $p$ from all points
+to get the following.
+
+![Distance Example 02](./img/distance_example_02.png)
+
+The problem looks simpler now, but we can do more. Knowing the angle of $v$
+from the $x$-axis, we rotate the entire plane to align $v$ with the $x$-axis.
+Then we get the following.
+
+![Distance Example 03](./img/distance_example_03.png)
+
+Now seeing whether the line segments cross one of the four cardinal directions
+in relation to the original vector $v$ became a simple matter of comparing
+the signs of of $x$ or $y$ coordinates. Evenmore, distances are now just
+$x$-intercept and $y$-intercept values.
+
 # Inside the AI's Mind
+
+As flappy bird was rather a simple game, it wasn't very insightful in how
+the AI was learning to beat the game. However, in this case, after running
+several trails, there were some particulars about the behaviors of the AI
+that were quite noticable.
+
 ## Learning One Feature at a Time
+
+In my previous post, I have hypothesized that the network would learn
+features sequentially and that previous learned feature would be rather
+stable.
+
+![Network Example](./img/network_example.png)
 
 ## Learning a Single Feature Too Well
 
 # Other Discussions
-
 
 # Future Plans
 ## Q Learning
