@@ -130,10 +130,15 @@ that were quite noticable.
 
 ## Learning One Feature at a Time
 
+In my previous post, I have hypothesized that the network would learn
+features sequentially and that previous learned feature would be rather
+stable.
+
+![Network Example](./img/network_example.png)
+
 ## Learning a Single Feature Too Well
 
 # Other Discussions
-
 
 # Future Plans
 ## Q Learning
