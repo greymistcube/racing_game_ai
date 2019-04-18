@@ -186,7 +186,40 @@ as any deviation from current stragety is likely to result in a low score.
 
 ## Having the Right Incentives
 
-## Running Straight into a Wall
+If two hidden nodes aren't enough to let the AI learn both turns,
+if left to its own devices and given long enough time, the AI *will*
+figure out how to beat the game by only turning right. So we need to intervene
+and discourage this kind of behavior.
+
+I tried to solve this problem by penalizing cars with the amount of directional
+difference it has between tha car's direction and the direction it needs to go.
+Internally, if a car ends in a position where it is looking the opposite way
+from the direction it needs to go, it will be most penalized.
+
+For example, let's consider the following case.
+
+![Bad Turn Example 01](./img/bad_turn_01.png)
+
+The arrow above represents the direction the car needs to go at the moment,
+which is provided by the track. Assuming the AI doesn't have the brain
+capacity to learn how to turn left at the moment, either running straight
+into the wall in the front, or turning right like so below.
+
+![Bad Turn Example 02](./img/bad_turn_02.png)
+
+In most cases, this would result in running straight into the wall on the right,
+but at every step, there is a small chance some mutated car would turn
+slightly more right. Once the critical point is reached, then the AI
+would effectively solve the left turning problem by turning right a lot.
+To discourage this, if we were to penalize by the amount of degrees between
+the car and the direction it needs to go, then running straight into the
+top wall would result in $-90$ points but running into the wall on the right
+would result in $-180$ points. What this means for the next generation of cars
+is that cars that ran into a wrong wall (the wall on the right) is less
+likely to pass on its gene, making it harder where the left turning problem
+is solved by only using right turns. 
+
+## The Problem of Speeding Cars
 
 # Other Discussions
 
