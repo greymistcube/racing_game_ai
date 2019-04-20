@@ -1,8 +1,8 @@
 import random
 import numpy as np
 
-import neat.evolver as evolver
-from neat.genome import Genome
+import ai.neat.evolver as evolver
+from ai.neat.genome import Genome
 
 POP_SIZE = 100
 SURVIVE_RATE = 0.2

@@ -4,7 +4,7 @@ import argparser
 
 import lib
 import lib.common as common
-import neatinterface
+import ai.neatinterface.neatcore
 
 pygame.init()
 
@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     # setting game mode
     if args.ai == "neat":
-        common.core = core = neatinterface.NeatCore()
+        common.core = core = ai.neatinterface.neatcore.NeatCore()
     else:
         common.core = core = lib.Core()
 

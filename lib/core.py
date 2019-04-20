@@ -6,7 +6,7 @@ from lib.objects.environment import Environment
 from lib.objects.car import Car
 
 # for debug
-import carvision
+import ai.neatinterface.sensors as sensors
 
 # initializing module
 pygame.init()
@@ -64,8 +64,8 @@ class Core:
             " FPS: {}".format(common.clock.get_FPS()),
         ]
         car = self.cars[0]
-        walls = carvision.get_scaled_neighbor_walls(car.tile)
-        distances = carvision.get_distances(car, walls)
+        walls = sensors.get_scaled_neighbor_walls(car.tile)
+        distances = sensors.get_distances(car, walls)
         distance_texts = [
             " Front: {0: .1f}".format(distances["front"]),
             " Back: {0: .1f}".format(distances["back"]),
@@ -73,7 +73,7 @@ class Core:
             " Right: {0: .1f}".format(distances["right"]),
         ]
         degrees_delta_text = [
-            " Degrees Delta: {}".format(carvision.get_singed_degrees_delta(car))
+            " Degrees Delta: {}".format(sensors.get_singed_degrees_delta(car))
         ]
 
         return common.display.texts_to_surface(

@@ -1,19 +1,14 @@
-import random
-
 import pygame
 
 import lib
 import lib.constants as const
 import lib.common as common
 
-import neat
-import carvision
+import ai.neat.neat as neat
+import ai.neatinterface.sensors as sensors
+from ai.neatinterface.smartcar import SmartCar
 
 pygame.init()
-
-def load_image(file):
-    image = pygame.image.load(file)
-    return image
 
 # game specific neat interface
 # this straps on to the original Core class
@@ -41,7 +36,7 @@ class NeatCore(lib.Core):
         self.best_score = 0
         # preprocessing data for later use for optimization
         for tile in self.env.track.track_tiles:
-            tile.scaled_neighbor_walls = carvision.get_scaled_neighbor_walls(tile)
+            tile.scaled_neighbor_walls = sensors.get_scaled_neighbor_walls(tile)
         return
 
     def new_cars(self):
@@ -67,7 +62,7 @@ class NeatCore(lib.Core):
                 + car.time_bonus * car.laps * 10 \
                 # if the direction of the car is closer to the direction of
                 # the tile grid, give reward
-                + (180 - abs(carvision.get_singed_degrees_delta(car))) \
+                + (180 - abs(sensors.get_singed_degrees_delta(car))) \
                 for car in self.cars
             ]
             self.population.score_genomes(scores)
@@ -114,8 +109,8 @@ class NeatCore(lib.Core):
     # extended methods
     def get_x(self, car):
         if car.alive:
-            degrees_delta = carvision.get_singed_degrees_delta(car)
-            distances = carvision.get_car_vision(car)
+            degrees_delta = sensors.get_singed_degrees_delta(car)
+            distances = sensors.get_car_vision(car)
             return [
                 car.speed,
                 degrees_delta / 180,
@@ -128,69 +123,3 @@ class NeatCore(lib.Core):
         # only living cars are called to think
         else:
             return [0] * self._num_input
-
-class SmartCar(lib.objects.car.Car):
-    _genome_to_color = {
-        "survived": "blue",
-        "mutated": "green",
-        "bred": "yellow",
-        "diverged": "red"
-    }
-
-    def __init__(self, tile, genome, color=None):
-        super().__init__(tile)
-
-        # override randomized color
-        self.genome = genome
-        self.surface = self._images[self.get_color(genome)]
-
-        # extra features to incentivize going faster
-        self.time_bonus = 0
-        self.timer = const.TIMER
-        self.prev_tile = self.tile
-
-        # randomize starting angle
-        self.direction.rotate(random.randint(-10, 10) * const.TURN_SPD)
-
-    def update(self):
-        super().update()
-        # if car is still on the same tile, countdown the timer
-        if self.prev_tile.grid == self.tile.grid:
-            self.timer -= 1
-        # if car went backwards, kill it off
-        elif self.prev_tile.grid == self.tile.next.grid:
-            self.alive = False
-        # if car went forwards, reset timer
-        elif self.prev_tile.grid == self.tile.prev.grid:
-            self.time_bonus += self.timer
-            self.timer = const.TIMER
-            self.prev_tile = self.tile
-        # if not any of the cases above, something went wrong
-        else:
-            raise Exception("tile update error")
-        # if timer ran out, kill off the car
-        if self.timer < 0:
-            self.alive = False
-        # fixing rounding error
-        self.speed = round(self.speed, 1)
-        return
-
-    def get_color(self, genome):
-        return self._genome_to_color[genome.genome_type]
-
-    def think(self, x):
-        pred = self.genome.predict(x)
-        if pred[0] and self.speed < const.SPD_LIMIT:
-            self.speed += const.ACC_RATE
-        elif pred[1] and self.speed > -const.SPD_LIMIT:
-            self.speed -= const.ACC_RATE
-        elif self.speed > 0:
-            self.speed -= const.ACC_RATE / 2
-        elif self.speed < 0:
-            self.speed += const.ACC_RATE / 2
-        if pred[2]:
-            self.direction.rotate(const.TURN_SPD)
-        if pred[3]:
-            self.direction.rotate(-const.TURN_SPD)
-        self.velocity = self.direction.vector * self.speed
-        return
