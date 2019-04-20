@@ -101,5 +101,10 @@ class Core:
             " Left: {0: .1f}".format(distances["left"]),
             " Right: {0: .1f}".format(distances["right"]),
         ]
+        degrees_delta_text = [
+            " Degrees Delta: {}".format(carvision.get_singed_degrees_delta(car))
+        ]
 
-        return self.text_renderer.texts_to_surface(texts + distance_texts)
+        return self.text_renderer.texts_to_surface(
+            texts + distance_texts + degrees_delta_text
+        )
