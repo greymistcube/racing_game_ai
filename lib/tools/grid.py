@@ -1,7 +1,7 @@
 # this is mostly to simplify the codes in other modules
 import numpy as np
 
-import lib.shared.constants as const
+import lib.constants as const
 
 class Grid:
     def __init__(self, x=0, y=0):

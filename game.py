@@ -3,6 +3,7 @@ import pygame
 import argparser
 
 import lib
+import lib.common as common
 import neatinterface
 
 pygame.init()
@@ -13,14 +14,21 @@ if __name__ == "__main__":
     # pygame initialization
     pygame.init()
 
-    settings = lib.Settings(args)
-    display = lib.Display(args)
-    clock = lib.Clock()
+    # initialize properly and make links make them as common resources
+    # for other modules
+    # I admit this looks pretty hideous but python has no good way of
+    # handling singletons
+    common.settings = settings = lib.Settings(args)
+    common.display = display = lib.Display()
+    common.clock = clock = lib.Clock()
+    common.events = events = lib.Events()
 
+    # setting game mode
     if args.ai == "neat":
-        core = neatinterface.NeatCore()
+        common.core = core = neatinterface.NeatCore()
     else:
-        core = lib.Core()
+        common.core = core = lib.Core()
+    
     core.new_game()
 
     # main loop

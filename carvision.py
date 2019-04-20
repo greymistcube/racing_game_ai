@@ -1,8 +1,8 @@
 import numpy as np
 
-from lib.grid import Grid
-import lib.tools as tools
-import lib.shared.constants as const
+from lib.tools.grid import Grid
+from lib.tools.direction import R, Direction
+import lib.constants as const
 
 grid_walls = {
     "n": (Grid(0, 0), Grid(1, 0)),
@@ -60,7 +60,7 @@ def get_distances(car, walls):
     # most likely because y axis is flipped upside down
     # direction class and rotation method should be overhauled
     # to keep better track of what is going on
-    rotate = lambda v: np.matmul(tools.R(car.direction.degrees), v)
+    rotate = lambda v: np.matmul(R(car.direction.degrees), v)
     walls = np.apply_along_axis(rotate, 2, walls)
     x_intersects = []
     y_intersects = []

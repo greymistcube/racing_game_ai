@@ -1,14 +1,16 @@
 import pygame
 
-import lib.shared.constants as const
-from lib.shared import Settings, Events
-from lib.environment import Environment
-from lib.car import Car
+import lib.constants as const
+import lib.common as common
 
+from lib.objects.environment import Environment
+from lib.objects.car import Car
+
+# for debug
 import carvision
 
+# initializing module
 pygame.init()
-settings = Settings()
 
 class TextRenderer:
     _font = pygame.font.Font("./rsc/font/monogram.ttf", 16)
@@ -37,10 +39,8 @@ class TextRenderer:
 
 class Core:
     def __init__(self):
-        self.clock = pygame.time.Clock()
         self.text_renderer = TextRenderer()
         self.game_count = 0
-        self.events = Events()
         self.cars = None
         self.env = None
         return
@@ -53,14 +53,13 @@ class Core:
         return
 
     def new_cars(self):
-        return [Car(self.env.track.start_tile) for _ in range(settings.num_cars)]
+        return [Car(self.env.track.start_tile) for _ in range(common.settings.num_cars)]
 
     def update(self):
-        self.clock.tick(settings.tickrate)
-        self.events.update()
-        settings.update(self.events)
+        common.events.update()
+        common.settings.update(common.events)
         for car in self.cars:
-            car.handle_events(self.events)
+            car.handle_events(common.events)
         self.env.update()
 
     def game_over(self):
@@ -71,9 +70,9 @@ class Core:
         info_surface = self.get_info_surface()
         debug_surface = self.get_debug_surface()
         debug_y_offset = info_surface.get_height()
-        if settings.info:
+        if common.settings.info:
             surface.blit(info_surface, (0, 0))
-        if settings.debug:
+        if common.settings.debug:
             surface.blit(debug_surface, (0, debug_y_offset))
         return surface
 
@@ -89,7 +88,7 @@ class Core:
     def get_debug_surface(self):
         texts = [
             " Speed: {0: .1f}".format(self.env.cars[0].speed),
-            " FPS: {}".format(1000 // self.clock.get_time()),
+            " FPS: {}".format(common.clock.get_FPS()),
         ]
         car = self.cars[0]
         walls = carvision.get_scaled_neighbor_walls(car.tile)

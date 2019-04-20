@@ -2,9 +2,10 @@ import random
 
 import pygame
 
-import lib.shared.constants as const
-from lib.tools import Direction
-from lib.grid import Grid
+import lib.constants as const
+import lib.common as common
+from lib.tools.direction import Direction
+from lib.tools.grid import Grid
 
 pygame.init()
 
@@ -94,18 +95,18 @@ class Car():
         self.rel_y += const.TILE_SIZE * (grid_offset.y * (-1))
         return
 
-    def handle_events(self, events):
-        if events.acc and self.speed < const.SPD_LIMIT:
+    def handle_events(self):
+        if common.events.acc and self.speed < const.SPD_LIMIT:
             self.speed += const.ACC_RATE
-        elif events.dec and self.speed > -const.SPD_LIMIT:
+        elif common.events.dec and self.speed > -const.SPD_LIMIT:
             self.speed -= const.ACC_RATE
         elif self.speed > 0:
             self.speed -= const.ACC_RATE / 2
         elif self.speed < 0:
             self.speed += const.ACC_RATE / 2
-        if events.left:
+        if common.events.left:
             self.direction.rotate(const.TURN_SPD)
-        elif events.right:
+        elif common.events.right:
             self.direction.rotate(-const.TURN_SPD)
         self.velocity = self.direction.vector * self.speed
 

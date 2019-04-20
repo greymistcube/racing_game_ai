@@ -3,14 +3,13 @@ import random
 import pygame
 
 import lib
-import lib.shared.constants as const
-from lib.shared import Settings
+import lib.constants as const
+import lib.common as common
 
 import neat
 import carvision
 
 pygame.init()
-settings = Settings()
 
 def load_image(file):
     image = pygame.image.load(file)
@@ -31,7 +30,7 @@ class NeatCore(lib.Core):
         self.population = neat.Population(
             self._num_input,
             self._num_output,
-            pop_size=settings.num_cars
+            pop_size=common.settings.num_cars
         )
         self.best_score = 0
         self.walls = None
@@ -49,9 +48,8 @@ class NeatCore(lib.Core):
         return [SmartCar(self.env.track.start_tile, genome) for genome in self.population.genomes]
 
     def update(self):
-        self.clock.tick(settings.tickrate)
-        self.events.update()
-        settings.update(self.events)
+        common.events.update()
+        common.settings.update()
         # only cycle through cars alive in the environment for optimization
         for car in self.env.cars:
             car.think(self.get_x(car))
@@ -108,7 +106,7 @@ class NeatCore(lib.Core):
             " Top Speed: {0: .1f}".format(
                 max([car.speed for car in self.env.cars])
             ),
-            " FPS: {}".format(1000 // self.clock.get_time()),
+            " FPS: {}".format(common.clock.get_FPS()),
         ]
 
         return self.text_renderer.texts_to_surface(texts)
@@ -131,7 +129,7 @@ class NeatCore(lib.Core):
         else:
             return [0] * self._num_input
 
-class SmartCar(lib.car.Car):
+class SmartCar(lib.objects.car.Car):
     _genome_to_color = {
         "survived": "blue",
         "mutated": "green",

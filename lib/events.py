@@ -4,6 +4,16 @@ import pygame
 pygame.init()
 
 class Events:
+    __instance = None
+
+    # implementing this class as singleton
+    def __new__(cls, *args, **kwargs):
+        if cls.__instance is None:
+            cls.__instance = super().__new__(cls)
+            return cls.__instance
+        else:
+            raise Exception("only single instance is allowed")
+
     def __init__(self):
         self.multiplier = 1
         self.acc = False

@@ -1,7 +1,7 @@
 import pygame
 
-import lib.shared.constants as const
-from lib.track import Track
+import lib.constants as const
+from lib.objects.track import Track
 
 pygame.init()
 
