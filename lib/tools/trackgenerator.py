@@ -1,6 +1,22 @@
 import random
 import numpy as np
 
+from lib.tools.grid import Grid
+from lib.objects.tracktile import TrackTile
+
+# this part could obviously be streamlined for smaller code footprint
+# not sure how to go about it without sacrificing code readability
+# since this is called once every game, this wouldn't be the main bottleneck
+# for the performance
+def create_track(width, height):
+    # when dealing with arrays x and y indices are swapped
+    arr = create_track_arr(height, width)
+    grids = arr_to_grids(arr)
+    tiles = grids_to_tiles(grids)
+    for tile in tiles:
+        tile.set_track_properties()
+    return tiles
+
 # creates two half sized mazes and glues them together
 def create_track_arr(height, width):
     half_height = height // 2
@@ -23,6 +39,57 @@ def create_track_arr(height, width):
     arr = np.vstack(arrs)
 
     return arr
+
+def arr_to_grids(arr):
+    result = []
+    # find the most upper left coordinate with value not equal to zero
+    # and set it as a temporary starting point
+    for i, _ in enumerate(arr):
+        for j, _ in enumerate(arr):
+            if arr[i][j] == 1:
+                result.append(Grid(j, i))
+                break
+        if result:
+            break
+
+    start = result[0]
+    while True:
+        current = result[-1]
+
+        # get four adjacent grids to check
+        adjacents = current.adjacents()
+
+        # if any of the adjacent grid is the same as the starting grid
+        # and the length of the result is sufficient, we've completed the loop
+        if any([adjacent == start for adjacent in adjacents]) \
+            and len(result) > 2:
+            break
+
+        for adjacent in adjacents:
+            if arr[adjacent.y][adjacent.x] == 1 and adjacent not in result:
+                result.append(adjacent)
+                break
+
+    return result
+
+def grids_to_tiles(grids):
+    result = []
+
+    for grid in grids:
+        if result:
+            previous_tile = result[-1]
+            current_tile = TrackTile(grid)
+            previous_tile.next = current_tile
+            current_tile.prev = previous_tile
+            result.append(current_tile)
+        else:
+            result.append(TrackTile(grid))
+
+    # connect the end points to complete the loop
+    result[-1].next = result[0]
+    result[0].prev = result[-1]
+
+    return result
 
 # modified version of depth first search algorithm
 # snice walls also take up space on the grid,
@@ -100,6 +167,7 @@ def possible_neighbors(arr, idx):
         (idx[0], idx[1] - 1),
         (idx[0], idx[1] + 1),
     ]
+
     for neighbor in neighbors[:]:
         if is_edge(arr, neighbor):
             neighbors.remove(neighbor)

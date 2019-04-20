@@ -6,6 +6,7 @@ import lib.constants as const
 import lib.common as common
 from lib.tools.direction import Direction
 from lib.tools.grid import Grid
+from lib.tools.sensor import Sensor
 
 pygame.init()
 
@@ -47,6 +48,7 @@ class Car():
         self.score = 0
         self.alive = True
         self.crashed_timer = const.CRASHED_TIMER
+        self.sensor = Sensor()
         return
 
     def update(self):
@@ -123,3 +125,11 @@ class Car():
             (self.tile.grid.y * const.TILE_SIZE) + self.rel_y,
         )
         return self.rect
+
+    def get_sensor_data(self):
+        return self.sensor.get_sensor_data(
+            self.tile,
+            self.rel_x,
+            self.rel_y,
+            self.direction,
+        )
