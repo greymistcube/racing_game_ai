@@ -1,8 +1,7 @@
 import pygame
 
-import lib.constants as const
-from lib.settings import Settings
-from lib.events import Events
+import lib.shared.constants as const
+from lib.shared import Settings, Events
 from lib.environment import Environment
 from lib.car import Car
 

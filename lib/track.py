@@ -2,7 +2,7 @@ import random
 
 import pygame
 
-from lib import constants as const
+import lib.shared.constants as const
 from lib.grid import Grid, Cardinals
 from lib import trackgenerator
 import lib.tools as tools

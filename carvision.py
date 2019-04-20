@@ -2,7 +2,7 @@ import numpy as np
 
 from lib.grid import Grid
 import lib.tools as tools
-import lib.constants as const
+import lib.shared.constants as const
 
 grid_walls = {
     "n": (Grid(0, 0), Grid(1, 0)),

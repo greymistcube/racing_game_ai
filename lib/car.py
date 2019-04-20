@@ -2,7 +2,7 @@ import random
 
 import pygame
 
-import lib.constants as const
+import lib.shared.constants as const
 from lib.tools import Direction
 from lib.grid import Grid
 

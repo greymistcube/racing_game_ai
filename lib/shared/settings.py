@@ -1,4 +1,4 @@
-from lib.constants import TICKRATE
+from .constants import TICKRATE
 
 class Settings:
     __instance = None

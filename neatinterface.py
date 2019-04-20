@@ -3,8 +3,8 @@ import random
 import pygame
 
 import lib
-import lib.constants as const
-from lib.settings import Settings
+import lib.shared.constants as const
+from lib.shared import Settings
 
 import neat
 import carvision

@@ -1,10 +1,8 @@
 import pygame
 
-import lib
-from lib.settings import Settings
-import lib.constants as const
 import argparser
 
+import lib
 import neatinterface
 
 pygame.init()
@@ -14,12 +12,11 @@ if __name__ == "__main__":
 
     # pygame initialization
     pygame.init()
-    screen = pygame.display.set_mode(
-        (const.WIDTH * args.z, const.HEIGHT * args.z)
-    )
-    clock = pygame.time.Clock()
 
-    settings = Settings(args)
+    settings = lib.Settings(args)
+    display = lib.Display(args)
+    clock = lib.Clock()
+
     if args.ai == "neat":
         core = neatinterface.NeatCore()
     else:
@@ -28,16 +25,11 @@ if __name__ == "__main__":
 
     # main loop
     while True:
-        # set tick rate to 60 per second
-        clock.tick(settings.tickrate)
-
+        clock.tick()
         core.update()
 
         if core.game_over():
             core.new_game()
             continue
 
-        surface = core.get_surface()
-        surface = pygame.transform.scale(surface, screen.get_size())
-        screen.blit(surface, surface.get_rect())
-        pygame.display.flip()
+        display.draw(core.get_surface())
