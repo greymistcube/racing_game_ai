@@ -61,9 +61,11 @@ class NeatCore(lib.Core):
                 + car.time_bonus * car.laps * 10 \
                 # if the direction of the car is closer to the direction of
                 # the tile grid, give reward
-                + (180 - abs(car.get_sensor_data()[1])) \
+                + (180 - abs(car.get_sensor_data()[1])) * 10 \
                 for car in self.cars
             ]
+            temp = [abs(car.get_sensor_data()[1]) for car in self.cars]
+            print(temp)
             self.population.score_genomes(scores)
             self.population.evolve_population()
             return True
