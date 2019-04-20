@@ -2,10 +2,10 @@ import random
 
 import pygame
 
-from lib import constants as const
-from lib.grid import Grid, Cardinals
-from lib import trackgenerator
-import lib.tools as tools
+import lib.constants as const
+from lib.tools.grid import Grid, Cardinals
+from lib.tools import trackgenerator
+from lib.tools.direction import Direction
 
 pygame.init()
 
@@ -91,7 +91,7 @@ class TrackTile():
         for cardinal in cardinals:
             if cardinal not in hole:
                 self.key += cardinal
-        self.direction = tools.Direction(Cardinals.to_degrees(self.next.grid - self.grid))
+        self.direction = Direction(Cardinals.to_degrees(self.next.grid - self.grid))
         self.surface = self.__images[self.key]
         return
 

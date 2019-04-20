@@ -1,7 +1,7 @@
 import pygame
 
 import lib.constants as const
-from lib.track import Track
+from lib.objects.track import Track
 
 pygame.init()
 

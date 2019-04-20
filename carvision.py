@@ -1,7 +1,7 @@
 import numpy as np
 
-from lib.grid import Grid
-import lib.tools as tools
+from lib.tools.grid import Grid
+from lib.tools.direction import R
 import lib.constants as const
 
 grid_walls = {
@@ -60,7 +60,7 @@ def get_distances(car, walls):
     # most likely because y axis is flipped upside down
     # direction class and rotation method should be overhauled
     # to keep better track of what is going on
-    rotate = lambda v: np.matmul(tools.R(car.direction.degrees), v)
+    rotate = lambda v: np.matmul(R(car.direction.degrees), v)
     walls = np.apply_along_axis(rotate, 2, walls)
     x_intersects = []
     y_intersects = []
@@ -92,12 +92,12 @@ def get_distances(car, walls):
             ((wall[1][1] - wall[0][1]) / (wall[1][0] - wall[0][0])) \
             * (-wall[0][0]) + wall[0][1]
         )
-    front = min([x for x in x_intercepts if x > 0]) / 20
-    back = min([-x for x in x_intercepts if x < 0]) / 20
+    front = min([x for x in x_intercepts if x > 0])
+    back = min([-x for x in x_intercepts if x < 0])
     # left and right might be swapped
     # shouldn't really matter for the end result
-    left = min([-y for y in y_intercepts if y < 0]) / 20
-    right = min([y for y in y_intercepts if y > 0]) / 20
+    left = min([-y for y in y_intercepts if y < 0])
+    right = min([y for y in y_intercepts if y > 0])
     return {
         "front": front,
         "back": back,
