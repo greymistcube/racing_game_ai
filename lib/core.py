@@ -61,16 +61,16 @@ class Core:
             " FPS: {}".format(common.clock.get_FPS()),
         ]
         car = self.cars[0]
-        distances, degrees_delta = car.get_sensor_data()
+        sensor_data = car.get_sensor_data()
 
         distance_texts = [
-            " Front: {0: .1f}".format(distances["front"]),
-            " Back: {0: .1f}".format(distances["back"]),
-            " Left: {0: .1f}".format(distances["left"]),
-            " Right: {0: .1f}".format(distances["right"]),
+            " Front: {0: .1f}".format(sensor_data["front"]),
+            " Back: {0: .1f}".format(sensor_data["back"]),
+            " Left: {0: .1f}".format(sensor_data["left"]),
+            " Right: {0: .1f}".format(sensor_data["right"]),
         ]
         degrees_delta_text = [
-            " Degrees Delta: {}".format(degrees_delta)
+            " Degrees Delta: {}".format(sensor_data["degrees"])
         ]
 
         return common.display.texts_to_surface(

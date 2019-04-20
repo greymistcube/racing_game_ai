@@ -53,6 +53,7 @@ class NeatCore(lib.Core):
     def game_over(self):
         if self.env.game_over():
             # added incentives
+
             scores = [
                 car.score \
                 # negate crossing the start line bonus
@@ -61,11 +62,9 @@ class NeatCore(lib.Core):
                 + car.time_bonus * car.laps * 10 \
                 # if the direction of the car is closer to the direction of
                 # the tile grid, give reward
-                + (180 - abs(car.get_sensor_data()[1])) * 10 \
+                + (180 - abs(car.get_sensor_data()["degrees"])) * 10 \
                 for car in self.cars
             ]
-            temp = [abs(car.get_sensor_data()[1]) for car in self.cars]
-            print(temp)
             self.population.score_genomes(scores)
             self.population.evolve_population()
             return True
@@ -110,14 +109,14 @@ class NeatCore(lib.Core):
     # extended methods
     def get_x(self, car):
         if car.alive:
-            distances, degrees_delta = car.get_sensor_data()
+            sensor_data = car.get_sensor_data()
             return [
                 car.speed,
-                degrees_delta / 180,
-                distances["front"] / const.TILE_SIZE,
-                distances["back"] / const.TILE_SIZE,
-                distances["left"] / const.TILE_SIZE,
-                distances["right"] / const.TILE_SIZE,
+                sensor_data["degrees"] / 180,
+                sensor_data["front"] / const.TILE_SIZE,
+                sensor_data["back"] / const.TILE_SIZE,
+                sensor_data["left"] / const.TILE_SIZE,
+                sensor_data["right"] / const.TILE_SIZE,
             ]
         # this part shouldn't really happen since
         # only living cars are called to think

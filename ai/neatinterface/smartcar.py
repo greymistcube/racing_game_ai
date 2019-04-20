@@ -26,6 +26,7 @@ class SmartCar(lib.objects.car.Car):
 
         # randomize starting angle
         self.direction.rotate(random.randint(-10, 10) * const.TURN_SPD)
+        self.death_type = 0
 
     def update(self):
         super().update()
@@ -35,6 +36,7 @@ class SmartCar(lib.objects.car.Car):
         # if car went backwards, kill it off
         elif self.prev_tile.grid == self.tile.next.grid:
             self.alive = False
+            self.death_type = 1
         # if car went forwards, reset timer
         elif self.prev_tile.grid == self.tile.prev.grid:
             self.time_bonus += self.timer
@@ -46,6 +48,7 @@ class SmartCar(lib.objects.car.Car):
         # if timer ran out, kill off the car
         if self.timer < 0:
             self.alive = False
+            self.death_type = 2
         # fixing rounding error
         self.speed = round(self.speed, 1)
         return

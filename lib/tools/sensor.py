@@ -16,7 +16,7 @@ class Sensor:
         # collect all walls from neighboring tiles
         for neighbor in neighbors:
             grid_delta = neighbor.grid - tile.grid
-            for wall in tile.walls:
+            for wall in neighbor.walls:
                 walls.append((
                     wall[0] + grid_delta,
                     wall[1] + grid_delta,
@@ -24,8 +24,10 @@ class Sensor:
 
         # convert to relative pixel coordinates
         walls = np.array([[wall[0].scaled, wall[1].scaled] for wall in walls])
-        return cls.get_distances(pt, direction, walls), \
-            cls.get_signed_degrees_delta(tile.direction, direction)
+
+        result = cls.get_distances(pt, direction, walls)
+        result.update(cls.get_signed_degrees_delta(tile.direction, direction))
+        return result
 
     @classmethod
     def get_distances(cls, pt, direction, walls):
@@ -87,4 +89,6 @@ class Sensor:
     @classmethod
     def get_signed_degrees_delta(cls, base_direction, target_direction):
         delta = (target_direction.degrees - base_direction.degrees) % 360
-        return delta if delta < 180 else (delta - 360)
+        return {
+            "degrees": delta if delta < 180 else (delta - 360)
+        }
