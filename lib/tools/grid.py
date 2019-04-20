@@ -48,7 +48,6 @@ class Grid:
     def scaled(self):
         return np.array([self.x, self.y]) * const.TILE_SIZE
 
-
 class Cardinals:
     __instance = None
     N = Grid(0, -1)
@@ -116,34 +115,47 @@ class Walls:
             cls.__instance = super().__new__(cls)
         return cls.__instance
 
-    @property
     @staticmethod
     def N():
         return (Grid(0, 0), Grid(1, 0))
 
-    @property
     @staticmethod
     def E():
         return (Grid(1, 0), Grid(1, 1))
 
-    @property
     @staticmethod
     def S():
         return (Grid(0, 1), Grid(1, 1))
 
-    @property
     @staticmethod
     def W():
         return (Grid(0, 0), Grid(0, 1))
 
-    @property
     @classmethod
     def char_to_wall(cls, char):
         if char == "n" or char == "N":
-            return cls.N
+            return cls.N()
         elif char == "e" or char == "E":
-            return cls.E
+            return cls.E()
         elif char == "s" or char == "S":
-            return cls.S
+            return cls.S()
         elif char == "w" or char == "W":
-            return cls.W
+            return cls.W()
+        else:
+            raise Exception("non cardinal character was given")
+
+    @classmethod
+    def direction_to_wall(cls, direction):
+        if direction.degrees % 90 == 0:
+            idx = direction.degrees // 90
+            return cls.char_to_wall("ensw"[idx])
+        else:
+            raise Exception("non cardinal direction object was given")
+
+    @classmethod
+    def grid_to_wall(cls, grid):
+        if grid in Cardinals():
+            idx = Cardinals.to_degrees(grid) // 90
+            return cls.char_to_wall("ensw"[idx])
+        else:
+            raise Exception("non cardinal grid object was given")

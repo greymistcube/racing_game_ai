@@ -5,7 +5,6 @@ import lib.constants as const
 import lib.common as common
 
 import ai.neat.neat as neat
-import ai.neatinterface.sensors as sensors
 from ai.neatinterface.smartcar import SmartCar
 
 pygame.init()
@@ -35,8 +34,8 @@ class NeatCore(lib.Core):
         super().new_game()
         self.best_score = 0
         # preprocessing data for later use for optimization
-        for tile in self.env.track.track_tiles:
-            tile.scaled_neighbor_walls = sensors.get_scaled_neighbor_walls(tile)
+        # for tile in self.env.track.track_tiles:
+        #     tile.scaled_neighbor_walls = sensor.get_scaled_neighbor_walls(tile)
         return
 
     def new_cars(self):
@@ -62,7 +61,7 @@ class NeatCore(lib.Core):
                 + car.time_bonus * car.laps * 10 \
                 # if the direction of the car is closer to the direction of
                 # the tile grid, give reward
-                + (180 - abs(sensors.get_singed_degrees_delta(car))) \
+                + (180 - abs(car.get_sensor_data()[1])) \
                 for car in self.cars
             ]
             self.population.score_genomes(scores)
@@ -109,8 +108,7 @@ class NeatCore(lib.Core):
     # extended methods
     def get_x(self, car):
         if car.alive:
-            degrees_delta = sensors.get_singed_degrees_delta(car)
-            distances = sensors.get_car_vision(car)
+            distances, degrees_delta = car.get_sensor_data()
             return [
                 car.speed,
                 degrees_delta / 180,

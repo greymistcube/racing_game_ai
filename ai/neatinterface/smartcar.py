@@ -2,6 +2,7 @@ import random
 
 import lib
 import lib.constants as const
+from lib.tools.sensor import Sensor
 
 class SmartCar(lib.objects.car.Car):
     _genome_to_color = {

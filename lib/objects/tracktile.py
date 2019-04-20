@@ -1,7 +1,7 @@
 import pygame
 
 import lib.constants as const
-from lib.tools.grid import Cardinals
+from lib.tools.grid import Cardinals, Walls
 from lib.tools.direction import Direction
 
 pygame.init()
@@ -11,8 +11,8 @@ def load_image(file):
     return image
 
 class TrackTile():
-    __image = load_image("./rsc/img/track_tile.png")
-    __images = {
+    _image = load_image("./rsc/img/track_tile.png")
+    _images = {
         "ne": load_image("./rsc/img/track_tile_ne.png"),
         "nw": load_image("./rsc/img/track_tile_nw.png"),
         "se": load_image("./rsc/img/track_tile_se.png"),
@@ -22,7 +22,7 @@ class TrackTile():
     }
 
     def __init__(self, grid):
-        self.rect = self.__image.get_rect()
+        self.rect = self._image.get_rect()
         self.grid = grid
         self.x = (self.grid.x * const.TILE_SIZE) + (const.TILE_SIZE // 2)
         self.y = (self.grid.y * const.TILE_SIZE) + (const.TILE_SIZE // 2)
@@ -30,8 +30,9 @@ class TrackTile():
         self.prev = None
         self.next = None
         self.direction = None
+        self.walls = []
         self.key = ""
-        self.surface = self.__image
+        self.surface = self._image
         self.is_start_tile = False
         return
 
@@ -50,8 +51,9 @@ class TrackTile():
         for cardinal in cardinals:
             if cardinal not in hole:
                 self.key += cardinal
+                self.walls.append(Walls.char_to_wall(cardinal))
         self.direction = Direction(Cardinals.to_degrees(self.next.grid - self.grid))
-        self.surface = self.__images[self.key]
+        self.surface = self._images[self.key]
         return
 
     def get_surface(self):

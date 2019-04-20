@@ -22,13 +22,10 @@ class Track():
             const.WIDTH // const.TILE_SIZE,
             const.HEIGHT // const.TILE_SIZE
         )
-        # set starting tile
+        # set the starting tile
         self.start_tile = random.choice(self.track_tiles)
         self.start_tile.is_start_tile = True
         self.surface = self.set_surface()
-
-    def get_start_grid(self):
-        return self.start_tile.grid
 
     # as a track is static throught a game, create a surface
     # during initialization

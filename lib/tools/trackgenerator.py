@@ -167,6 +167,7 @@ def possible_neighbors(arr, idx):
         (idx[0], idx[1] - 1),
         (idx[0], idx[1] + 1),
     ]
+
     for neighbor in neighbors[:]:
         if is_edge(arr, neighbor):
             neighbors.remove(neighbor)
