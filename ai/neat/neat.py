@@ -81,6 +81,13 @@ class Population:
 
         self.genomes = survived + mutated + bred + diverged
 
+        # limit weights
+        for genome in self.genomes:
+            genome.w1[genome.w1 > 1] = 1
+            genome.w1[genome.w1 < -1] = -1
+            genome.w2[genome.w2 > 1] = 1
+            genome.w2[genome.w2 < -1] = -1
+
         # this is done for purely cosmetic purpose when rendering
         random.shuffle(self.genomes)
 
