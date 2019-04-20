@@ -23,6 +23,6 @@ class Clock:
     def tick(self):
         self.clock.tick(common.settings.tickrate)
         return
-    
+
     def get_FPS(self):
         return 1000 // self.clock.get_time()

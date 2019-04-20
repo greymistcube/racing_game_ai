@@ -99,7 +99,7 @@ class NeatCore(lib.Core):
             " (Yellow) Bred: {}".format(num_bred)
         ]
 
-        return self.text_renderer.texts_to_surface(texts)
+        return common.display.texts_to_surface(texts)
 
     def get_debug_surface(self):
         texts = [
@@ -109,7 +109,7 @@ class NeatCore(lib.Core):
             " FPS: {}".format(common.clock.get_FPS()),
         ]
 
-        return self.text_renderer.texts_to_surface(texts)
+        return common.display.texts_to_surface(texts)
 
     # extended methods
     def get_x(self, car):
@@ -119,10 +119,10 @@ class NeatCore(lib.Core):
             return [
                 car.speed,
                 degrees_delta / 180,
-                distances["front"],
-                distances["back"],
-                distances["left"],
-                distances["right"],
+                distances["front"] / const.TILE_SIZE,
+                distances["back"] / const.TILE_SIZE,
+                distances["left"] / const.TILE_SIZE,
+                distances["right"] / const.TILE_SIZE,
             ]
         # this part shouldn't really happen since
         # only living cars are called to think

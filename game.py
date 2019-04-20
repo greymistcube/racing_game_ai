@@ -28,7 +28,7 @@ if __name__ == "__main__":
         common.core = core = neatinterface.NeatCore()
     else:
         common.core = core = lib.Core()
-    
+
     core.new_game()
 
     # main loop

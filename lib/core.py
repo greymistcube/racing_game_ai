@@ -1,6 +1,5 @@
 import pygame
 
-import lib.constants as const
 import lib.common as common
 
 from lib.objects.environment import Environment
@@ -12,34 +11,8 @@ import carvision
 # initializing module
 pygame.init()
 
-class TextRenderer:
-    _font = pygame.font.Font("./rsc/font/monogram.ttf", 16)
-    # simulate bold font
-    # better readability but uglier
-    # _font.set_bold(True)
-    _line_height = _font.get_linesize()
-
-    # render a single line of text
-    def text_to_surface(self, text):
-        return self._font.render(text, False, const.BLACK)
-
-    # render multiple lines of texts
-    def texts_to_surface(self, texts):
-        text_surfaces = [self.text_to_surface(text) for text in texts]
-        surface = pygame.Surface(
-            (
-                max(text_surface.get_width() for text_surface in text_surfaces),
-                len(text_surfaces) * self._line_height
-            ),
-            pygame.SRCALPHA
-        )
-        for i, text_surface in enumerate(text_surfaces):
-            surface.blit(text_surface, (0, self._line_height * i))
-        return surface
-
 class Core:
     def __init__(self):
-        self.text_renderer = TextRenderer()
         self.game_count = 0
         self.cars = None
         self.env = None
@@ -57,9 +30,9 @@ class Core:
 
     def update(self):
         common.events.update()
-        common.settings.update(common.events)
+        common.settings.update()
         for car in self.cars:
-            car.handle_events(common.events)
+            car.handle_events()
         self.env.update()
 
     def game_over(self):
@@ -83,7 +56,7 @@ class Core:
             " Alive: {}".format(self.env.num_alive)
         ]
 
-        return self.text_renderer.texts_to_surface(texts)
+        return common.display.texts_to_surface(texts)
 
     def get_debug_surface(self):
         texts = [
@@ -103,6 +76,6 @@ class Core:
             " Degrees Delta: {}".format(carvision.get_singed_degrees_delta(car))
         ]
 
-        return self.text_renderer.texts_to_surface(
+        return common.display.texts_to_surface(
             texts + distance_texts + degrees_delta_text
         )
