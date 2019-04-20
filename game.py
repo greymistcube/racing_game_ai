@@ -1,11 +1,10 @@
 import pygame
 
-import lib
-from lib.settings import Settings
-import lib.constants as const
 import argparser
 
-import neatinterface
+import lib
+import lib.common as common
+import ai.neatinterface.neatcore
 
 pygame.init()
 
@@ -14,30 +13,31 @@ if __name__ == "__main__":
 
     # pygame initialization
     pygame.init()
-    screen = pygame.display.set_mode(
-        (const.WIDTH * args.z, const.HEIGHT * args.z)
-    )
-    clock = pygame.time.Clock()
 
-    settings = Settings(args)
+    # initialize properly and make links make them as common resources
+    # for other modules
+    # I admit this looks pretty hideous but python has no good way of
+    # handling singletons
+    common.settings = settings = lib.Settings(args)
+    common.display = display = lib.Display()
+    common.clock = clock = lib.Clock()
+    common.events = events = lib.Events()
+
+    # setting game mode
     if args.ai == "neat":
-        core = neatinterface.NeatCore()
+        common.core = core = ai.neatinterface.neatcore.NeatCore()
     else:
-        core = lib.Core()
+        common.core = core = lib.Core()
+
     core.new_game()
 
     # main loop
     while True:
-        # set tick rate to 60 per second
-        clock.tick(settings.tickrate)
-
+        clock.tick()
         core.update()
 
         if core.game_over():
             core.new_game()
             continue
 
-        surface = core.get_surface()
-        surface = pygame.transform.scale(surface, screen.get_size())
-        screen.blit(surface, surface.get_rect())
-        pygame.display.flip()
+        display.draw(core.get_surface())

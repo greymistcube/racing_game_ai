@@ -1,7 +1,7 @@
 import copy
 import numpy as np
 
-from neat.genome import Genome
+from ai.neat.genome import Genome
 
 # list of constants for convenience
 MUTATE_RATE = 0.1

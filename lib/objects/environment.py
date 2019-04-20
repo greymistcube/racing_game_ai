@@ -1,7 +1,7 @@
 import pygame
 
 import lib.constants as const
-from lib.track import Track
+from lib.objects.track import Track
 
 pygame.init()
 
@@ -15,7 +15,6 @@ class Environment:
     def __init__(self):
         self.score = 0
         self.track = Track()
-        self.start_grid = self.track.get_start_grid()
         self.cars = []
         self.crashed_cars = []
         self.num_alive = 0

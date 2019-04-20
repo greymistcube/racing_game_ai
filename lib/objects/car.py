@@ -3,8 +3,10 @@ import random
 import pygame
 
 import lib.constants as const
-from lib.tools import Direction
-from lib.grid import Grid
+import lib.common as common
+from lib.tools.direction import Direction
+from lib.tools.grid import Grid
+from lib.tools.sensor import Sensor
 
 pygame.init()
 
@@ -46,6 +48,7 @@ class Car():
         self.score = 0
         self.alive = True
         self.crashed_timer = const.CRASHED_TIMER
+        self.sensor = Sensor()
         return
 
     def update(self):
@@ -94,18 +97,18 @@ class Car():
         self.rel_y += const.TILE_SIZE * (grid_offset.y * (-1))
         return
 
-    def handle_events(self, events):
-        if events.acc and self.speed < const.SPD_LIMIT:
+    def handle_events(self):
+        if common.events.acc and self.speed < const.SPD_LIMIT:
             self.speed += const.ACC_RATE
-        elif events.dec and self.speed > -const.SPD_LIMIT:
+        elif common.events.dec and self.speed > -const.SPD_LIMIT:
             self.speed -= const.ACC_RATE
         elif self.speed > 0:
             self.speed -= const.ACC_RATE / 2
         elif self.speed < 0:
             self.speed += const.ACC_RATE / 2
-        if events.left:
+        if common.events.left:
             self.direction.rotate(const.TURN_SPD)
-        elif events.right:
+        elif common.events.right:
             self.direction.rotate(-const.TURN_SPD)
         self.velocity = self.direction.vector * self.speed
 
@@ -122,3 +125,11 @@ class Car():
             (self.tile.grid.y * const.TILE_SIZE) + self.rel_y,
         )
         return self.rect
+
+    def get_sensor_data(self):
+        return self.sensor.get_sensor_data(
+            self.tile,
+            self.rel_x,
+            self.rel_y,
+            self.direction,
+        )
