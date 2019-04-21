@@ -3,7 +3,6 @@ import pygame
 import argparser
 
 import lib
-import lib.common as common
 import ai.neatinterface.neatcore
 
 pygame.init()
@@ -18,16 +17,16 @@ if __name__ == "__main__":
     # for other modules
     # I admit this looks pretty hideous but python has no good way of
     # handling singletons
-    common.settings = settings = lib.Settings(args)
-    common.display = display = lib.Display()
-    common.clock = clock = lib.Clock()
-    common.events = events = lib.Events()
+    lib.common.settings = settings = lib.Settings(args)
+    lib.common.display = display = lib.Display()
+    lib.common.clock = clock = lib.Clock()
+    lib.common.events = events = lib.Events()
 
     # setting game mode
     if args.ai == "neat":
-        common.core = core = ai.neatinterface.neatcore.NeatCore()
+        lib.common.core = core = ai.neatinterface.neatcore.NeatCore()
     else:
-        common.core = core = lib.Core()
+        lib.common.core = core = lib.Core()
 
     core.new_game()
 
