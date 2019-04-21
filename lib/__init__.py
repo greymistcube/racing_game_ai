@@ -1,3 +1,5 @@
+import lib.common
+
 from lib.core import Core
 from lib.settings import Settings
 from lib.display import Display
