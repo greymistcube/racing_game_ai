@@ -86,12 +86,12 @@ class NeatCore(lib.Core):
         ])
 
         texts = [
-            " Game: {}".format(self.game_count),
-            " Best Score: {}".format(self.best_score),
-            " Alive: {}".format(self.env.num_alive),
-            " (Blue) Survived: {}".format(num_survived),
-            " (Green) Mutated: {}".format(num_mutated),
-            " (Yellow) Bred: {}".format(num_bred)
+            f" Game: {self.game_count}",
+            f" Best Score: {self.best_score}",
+            f" Alive: {self.env.num_alive}",
+            f" (Blue) Survived: {num_survived}",
+            f" (Green) Mutated: {num_mutated}",
+            f" (Yellow) Bred: {num_bred}",
         ]
 
         return common.display.texts_to_surface(texts)
