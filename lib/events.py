@@ -14,7 +14,7 @@ class Events:
         else:
             raise Exception("only single instance is allowed")
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.multiplier = 1
         self.acc = False
         self.dec = False
@@ -24,7 +24,7 @@ class Events:
         self.debug = False
         return
 
-    def update(self):
+    def update(self) -> None:
         self.info = False
         self.debug = False
         # check for quit event

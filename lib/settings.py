@@ -12,7 +12,7 @@ class Settings:
         else:
             raise Exception("only single instance is allowed")
 
-    def __init__(self, args=None):
+    def __init__(self, args=None) -> None:
         self.info = True
         self.debug = False
         if args is not None:
@@ -23,7 +23,7 @@ class Settings:
             )
         return
 
-    def update(self):
+    def update(self) -> None:
         self.tickrate = const.TICKRATE * common.events.multiplier
         if common.events.info:
             self.info = not self.info

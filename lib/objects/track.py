@@ -26,6 +26,7 @@ class Track():
         self.start_tile = random.choice(self.track_tiles)
         self.start_tile.is_start_tile = True
         self.surface = self.set_surface()
+        return
 
     # as a track is static throught a game, create a surface
     # during initialization
@@ -40,7 +41,6 @@ class Track():
             ),
             self.start_tile.rect
         )
-
         return surface
 
     def get_surface(self):

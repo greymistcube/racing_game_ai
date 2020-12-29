@@ -51,7 +51,7 @@ class Car():
         self.sensor = Sensor()
         return
 
-    def update(self):
+    def update(self) -> None:
         self.rel_x += self.velocity[1]
         self.rel_y += self.velocity[0]
         grid_offset = _grid_offset(self.rel_x, self.rel_y)
@@ -62,6 +62,7 @@ class Car():
                 self.update_tile(grid_offset)
         # fixing rounding error
         self.speed = round(self.speed, 1)
+        return
 
     # lazy implementation of collision
     # it's easier to crash the car if it doesn't land on
@@ -69,7 +70,7 @@ class Car():
     # although this doesn't fully cover the diagonally crossing cases
     # those should be rather extreme edge cases
     # this only makes corner turning slightly more tighter
-    def check_crash(self, grid_offset):
+    def check_crash(self, grid_offset) -> bool:
         if self.tile.grid + grid_offset not in [
                 self.tile.prev.grid,
                 self.tile.next.grid,
@@ -78,7 +79,7 @@ class Car():
         else:
             return False
 
-    def update_tile(self, grid_offset):
+    def update_tile(self, grid_offset) -> None:
         if self.tile.grid + grid_offset == self.tile.next.grid:
             self.score += const.TILE_SCORE
             self.tile = self.tile.next
@@ -97,7 +98,7 @@ class Car():
         self.rel_y += const.TILE_SIZE * (grid_offset.y * (-1))
         return
 
-    def handle_events(self):
+    def handle_events(self) -> None:
         if common.events.acc and self.speed < const.SPD_LIMIT:
             self.speed += const.ACC_RATE
         elif common.events.dec and self.speed > -const.SPD_LIMIT:
@@ -111,6 +112,7 @@ class Car():
         elif common.events.right:
             self.direction.rotate(-const.TURN_SPD)
         self.velocity = self.direction.vector * self.speed
+        return
 
     def get_surface(self):
         if self.alive:

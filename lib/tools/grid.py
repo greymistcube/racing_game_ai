@@ -20,7 +20,7 @@ class Grid:
         return self.x == other.x and self.y == other.y
 
     def __repr__(self):
-        return "({}, {})".format(self.x, self.y)
+        return f"({self.x}, {self.y})"
 
     def __bool__(self):
         return self.x != 0 or self.y != 0
