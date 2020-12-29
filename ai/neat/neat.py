@@ -57,15 +57,11 @@ class Population:
         self.genomes.sort(key=lambda genome: genome.fitness, reverse=True)
 
         # logging
-        print("generation: {}".format(self.generation))
-        print("best score: {:.4f}".format(self.genomes[0].score))
-        print("best fitness: {:.4f}".format(self.genomes[0].fitness))
-        print("best type: {}".format(self.genomes[0].genome_type))
-        print("best shape: {}, {}, {}".format(
-            self.genomes[0].x_dim,
-            self.genomes[0].h_dim,
-            self.genomes[0].y_dim
-        ))
+        print(f"generation: {self.generation}")
+        print(f"best score: {self.genomes[0].score:.4f}")
+        print(f"best fitness: {self.genomes[0].fitness:.4f}")
+        print(f"best type: {self.genomes[0].genome_type}")
+        print(f"best shape: {self.genomes[0].x_dim}, {self.genomes[0].h_dim}, {self.genomes[0].y_dim}")
         print("----------------")
 
         survived = evolver.get_survived(self.genomes, self.num_survive)

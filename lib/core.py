@@ -48,9 +48,9 @@ class Core:
 
     def get_info_surface(self):
         texts = [
-            " Game: {}".format(self.game_count),
-            " Score: {}".format(self.env.score),
-            " Alive: {}".format(self.env.num_alive)
+            f" Game: {self.game_count}",
+            f" Score: {self.env.score}",
+            f" Alive: {self.env.num_alive}",
         ]
 
         return common.display.texts_to_surface(texts)
