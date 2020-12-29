@@ -25,4 +25,4 @@ class Clock:
         return
 
     def get_FPS(self):
-        return 1000 // self.clock.get_time()
+        return 1000 // max(1, self.clock.get_time())
